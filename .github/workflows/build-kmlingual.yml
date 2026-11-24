@@ -9,6 +9,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      ANDROID_HOME: /usr/local/lib/android/sdk
+      ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -19,15 +23,11 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-        with:
-          cmdline-tools-version: '16.0'
-
-      - name: Accept Android SDK Licenses & Install Required SDK Packages
+      - name: Configure Android SDK & Accept Licenses
         run: |
+          export PATH="$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/cmdline-tools/20.0/bin:$ANDROID_HOME/platform-tools:$PATH"
           yes | sdkmanager --licenses > /dev/null || true
-          yes | sdkmanager --install "cmdline-tools;latest" "platform-tools" "platforms;android-34" "build-tools;34.0.0" > /dev/null
+          yes | sdkmanager --install "platform-tools" "platforms;android-34" "build-tools;34.0.0" > /dev/null
 
       - name: Scaffold KmLingual Android Project
         run: |
@@ -258,7 +258,6 @@ jobs:
                       android:text="Offline Pack Status: Ready"
                       android:textSize="13sp" />
 
-                  <!-- Language Selection & Pack Download -->
                   <com.google.android.material.card.MaterialCardView
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content"
@@ -320,7 +319,6 @@ jobs:
                       </LinearLayout>
                   </com.google.android.material.card.MaterialCardView>
 
-                  <!-- Step & Lesson Selector -->
                   <com.google.android.material.card.MaterialCardView
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content"
@@ -357,7 +355,6 @@ jobs:
                       </LinearLayout>
                   </com.google.android.material.card.MaterialCardView>
 
-                  <!-- Active Target Phrase & Speech Controls -->
                   <com.google.android.material.card.MaterialCardView
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content"
@@ -464,7 +461,6 @@ jobs:
                       </LinearLayout>
                   </com.google.android.material.card.MaterialCardView>
 
-                  <!-- Personal Tutor Interactive Check -->
                   <com.google.android.material.card.MaterialCardView
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content"
