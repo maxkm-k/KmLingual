@@ -86,8 +86,8 @@ jobs:
                   applicationId "com.km.lingual"
                   minSdk 24
                   targetSdk 34
-                  versionCode 1
-                  versionName "1.0"
+                  versionCode 2
+                  versionName "2.0"
               }
 
               buildTypes {
@@ -136,7 +136,7 @@ jobs:
               android:viewportWidth="108"
               android:viewportHeight="108">
               <path
-                  android:fillColor="#1565C0"
+                  android:fillColor="#0F172A"
                   android:pathData="M0,0h108v108h-108z" />
           </vector>
           EOF
@@ -149,8 +149,8 @@ jobs:
               android:viewportWidth="108"
               android:viewportHeight="108">
               <path
-                  android:fillColor="#FFFFFF"
-                  android:pathData="M34,34h40v40h-40z" />
+                  android:fillColor="#38BDF8"
+                  android:pathData="M28,32h52v44h-52z" />
           </vector>
           EOF
 
@@ -184,10 +184,11 @@ jobs:
           EOF
 
           cat << 'EOF' > app/src/main/res/values/themes.xml
-          <resources xmlns:tools="http://schemas.android.com/tools">
+          <resources>
               <style name="Theme.KmLingual" parent="Theme.Material3.DayNight.NoActionBar">
-                  <item name="colorPrimary">#1565C0</item>
-                  <item name="colorSecondary">#00897B</item>
+                  <item name="colorPrimary">#0284C7</item>
+                  <item name="colorSecondary">#0D9488</item>
+                  <item name="android:windowBackground">#0B1120</item>
               </style>
           </resources>
           EOF
@@ -198,10 +199,14 @@ jobs:
 
               <uses-permission android:name="android.permission.INTERNET" />
               <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+              <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
               <queries>
                   <intent>
                       <action android:name="android.intent.action.TTS_SERVICE" />
+                  </intent>
+                  <intent>
+                      <action android:name="android.speech.RecognitionService" />
                   </intent>
               </queries>
 
@@ -229,309 +234,258 @@ jobs:
 
           cat << 'EOF' > app/src/main/res/layout/activity_main.xml
           <?xml version="1.0" encoding="utf-8"?>
-          <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+          <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:fillViewport="true"
-              android:padding="16dp">
+              android:background="#0B1120"
+              android:padding="14dp">
 
+              <!-- Top Tutor Bar + Settings Button -->
               <LinearLayout
-                  android:layout_width="match_parent"
+                  android:id="@+id/topBar"
+                  android:layout_width="0dp"
                   android:layout_height="wrap_content"
-                  android:orientation="vertical">
+                  android:gravity="center_vertical"
+                  android:orientation="horizontal"
+                  app:layout_constraintEnd_toEndOf="parent"
+                  app:layout_constraintStart_toStartOf="parent"
+                  app:layout_constraintTop_toTopOf="parent">
 
-                  <TextView
-                      android:id="@+id/tvHeader"
-                      android:layout_width="match_parent"
+                  <LinearLayout
+                      android:layout_width="0dp"
                       android:layout_height="wrap_content"
-                      android:text="KmLingual — Personal Language Tutor"
-                      android:textSize="22sp"
-                      android:textStyle="bold" />
+                      android:layout_weight="1"
+                      android:orientation="vertical">
 
-                  <TextView
-                      android:id="@+id/tvStatus"
-                      android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:layout_marginTop="4dp"
-                      android:text="Offline Pack Status: Ready"
-                      android:textSize="13sp" />
-
-                  <com.google.android.material.card.MaterialCardView
-                      android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:layout_marginTop="12dp"
-                      app:cardElevation="3dp">
-
-                      <LinearLayout
-                          android:layout_width="match_parent"
+                      <TextView
+                          android:id="@+id/tvTutorHeader"
+                          android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
-                          android:orientation="vertical"
-                          android:padding="14dp">
+                          android:text="KmLingual Tutor"
+                          android:textColor="#F8FAFC"
+                          android:textSize="20sp"
+                          android:textStyle="bold" />
 
-                          <TextView
-                              android:layout_width="match_parent"
-                              android:layout_height="wrap_content"
-                              android:text="1. Select Target Language &amp; Offline Pack"
-                              android:textSize="16sp"
-                              android:textStyle="bold" />
-
-                          <Spinner
-                              android:id="@+id/spLanguage"
-                              android:layout_width="match_parent"
-                              android:layout_height="48dp"
-                              android:layout_marginTop="8dp" />
-
-                          <LinearLayout
-                              android:layout_width="match_parent"
-                              android:layout_height="wrap_content"
-                              android:layout_marginTop="8dp"
-                              android:orientation="horizontal">
-
-                              <Button
-                                  android:id="@+id/btnDownloadPack"
-                                  android:layout_width="0dp"
-                                  android:layout_height="wrap_content"
-                                  android:layout_weight="1"
-                                  android:text="Download / Sync Pack" />
-
-                              <Space
-                                  android:layout_width="8dp"
-                                  android:layout_height="wrap_content" />
-
-                              <Button
-                                  android:id="@+id/btnOfflineMode"
-                                  android:layout_width="0dp"
-                                  android:layout_height="wrap_content"
-                                  android:layout_weight="1"
-                                  android:text="Load Offline" />
-                          </LinearLayout>
-
-                          <EditText
-                              android:id="@+id/etPackUrlTemplate"
-                              android:layout_width="match_parent"
-                              android:layout_height="wrap_content"
-                              android:layout_marginTop="8dp"
-                              android:hint="Optional remote JSON URL ({lang} supported)"
-                              android:inputType="textUri"
-                              android:textSize="12sp" />
-                      </LinearLayout>
-                  </com.google.android.material.card.MaterialCardView>
-
-                  <com.google.android.material.card.MaterialCardView
-                      android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:layout_marginTop="12dp"
-                      app:cardElevation="3dp">
-
-                      <LinearLayout
-                          android:layout_width="match_parent"
+                      <TextView
+                          android:id="@+id/tvActiveLangPart"
+                          android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
-                          android:orientation="vertical"
-                          android:padding="14dp">
+                          android:text="Arabic • Part 1: Greetings &amp; Politeness"
+                          android:textColor="#38BDF8"
+                          android:textSize="12sp" />
+                  </LinearLayout>
 
-                          <TextView
-                              android:id="@+id/tvStepTitle"
-                              android:layout_width="match_parent"
-                              android:layout_height="wrap_content"
-                              android:text="2. Step-by-Step Curriculum"
-                              android:textSize="16sp"
-                              android:textStyle="bold" />
-
-                          <Spinner
-                              android:id="@+id/spLesson"
-                              android:layout_width="match_parent"
-                              android:layout_height="48dp"
-                              android:layout_marginTop="8dp" />
-
-                          <TextView
-                              android:id="@+id/tvTutorGuidance"
-                              android:layout_width="match_parent"
-                              android:layout_height="wrap_content"
-                              android:layout_marginTop="8dp"
-                              android:text="Tutor explanation appears here."
-                              android:textSize="14sp" />
-                      </LinearLayout>
-                  </com.google.android.material.card.MaterialCardView>
-
-                  <com.google.android.material.card.MaterialCardView
-                      android:layout_width="match_parent"
+                  <com.google.android.material.button.MaterialButton
+                      android:id="@+id/btnSettings"
+                      style="@style/Widget.Material3.Button.TonalButton"
+                      android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
-                      android:layout_marginTop="12dp"
-                      app:cardElevation="4dp">
-
-                      <LinearLayout
-                          android:layout_width="match_parent"
-                          android:layout_height="wrap_content"
-                          android:orientation="vertical"
-                          android:padding="14dp">
-
-                          <TextView
-                              android:id="@+id/tvItemCounter"
-                              android:layout_width="match_parent"
-                              android:layout_height="wrap_content"
-                              android:text="Drill 1 / 1"
-                              android:textSize="12sp"
-                              android:textStyle="bold" />
-
-                          <TextView
-                              android:id="@+id/tvTargetScript"
-                              android:layout_width="match_parent"
-                              android:layout_height="wrap_content"
-                              android:layout_marginTop="8dp"
-                              android:text="Target phrase"
-                              android:textSize="24sp"
-                              android:textStyle="bold" />
-
-                          <TextView
-                              android:id="@+id/tvTransliteration"
-                              android:layout_width="match_parent"
-                              android:layout_height="wrap_content"
-                              android:layout_marginTop="4dp"
-                              android:text="Pronunciation guide"
-                              android:textSize="15sp"
-                              android:textStyle="italic" />
-
-                          <TextView
-                              android:id="@+id/tvMeaning"
-                              android:layout_width="match_parent"
-                              android:layout_height="wrap_content"
-                              android:layout_marginTop="4dp"
-                              android:text="Meaning in English"
-                              android:textSize="15sp" />
-
-                          <TextView
-                              android:id="@+id/tvGrammarTip"
-                              android:layout_width="match_parent"
-                              android:layout_height="wrap_content"
-                              android:layout_marginTop="8dp"
-                              android:text="Deep structure &amp; usage note"
-                              android:textSize="13sp" />
-
-                          <LinearLayout
-                              android:layout_width="match_parent"
-                              android:layout_height="wrap_content"
-                              android:layout_marginTop="12dp"
-                              android:orientation="horizontal">
-
-                              <Button
-                                  android:id="@+id/btnSpeakTarget"
-                                  android:layout_width="0dp"
-                                  android:layout_height="wrap_content"
-                                  android:layout_weight="1"
-                                  android:text="Speak Target" />
-
-                              <Space
-                                  android:layout_width="8dp"
-                                  android:layout_height="wrap_content" />
-
-                              <Button
-                                  android:id="@+id/btnSpeakSlow"
-                                  android:layout_width="0dp"
-                                  android:layout_height="wrap_content"
-                                  android:layout_weight="1"
-                                  android:text="Speak Slow" />
-                          </LinearLayout>
-
-                          <LinearLayout
-                              android:layout_width="match_parent"
-                              android:layout_height="wrap_content"
-                              android:layout_marginTop="8dp"
-                              android:orientation="horizontal">
-
-                              <Button
-                                  android:id="@+id/btnPrevItem"
-                                  android:layout_width="0dp"
-                                  android:layout_height="wrap_content"
-                                  android:layout_weight="1"
-                                  android:text="Previous" />
-
-                              <Space
-                                  android:layout_width="8dp"
-                                  android:layout_height="wrap_content" />
-
-                              <Button
-                                  android:id="@+id/btnNextItem"
-                                  android:layout_width="0dp"
-                                  android:layout_height="wrap_content"
-                                  android:layout_weight="1"
-                                  android:text="Next Step" />
-                          </LinearLayout>
-                      </LinearLayout>
-                  </com.google.android.material.card.MaterialCardView>
-
-                  <com.google.android.material.card.MaterialCardView
-                      android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:layout_marginTop="12dp"
-                      app:cardElevation="3dp">
-
-                      <LinearLayout
-                          android:layout_width="match_parent"
-                          android:layout_height="wrap_content"
-                          android:orientation="vertical"
-                          android:padding="14dp">
-
-                          <TextView
-                              android:layout_width="match_parent"
-                              android:layout_height="wrap_content"
-                              android:text="3. Personal Tutor Active Recall"
-                              android:textSize="16sp"
-                              android:textStyle="bold" />
-
-                          <TextView
-                              android:id="@+id/tvTutorPrompt"
-                              android:layout_width="match_parent"
-                              android:layout_height="wrap_content"
-                              android:layout_marginTop="6dp"
-                              android:text="Say or type the target phrase/meaning to test yourself with your tutor."
-                              android:textSize="13sp" />
-
-                          <EditText
-                              android:id="@+id/etLearnerAttempt"
-                              android:layout_width="match_parent"
-                              android:layout_height="wrap_content"
-                              android:layout_marginTop="8dp"
-                              android:hint="Type your answer or transliteration/meaning..."
-                              android:inputType="text" />
-
-                          <LinearLayout
-                              android:layout_width="match_parent"
-                              android:layout_height="wrap_content"
-                              android:layout_marginTop="8dp"
-                              android:orientation="horizontal">
-
-                              <Button
-                                  android:id="@+id/btnCheckTutor"
-                                  android:layout_width="0dp"
-                                  android:layout_height="wrap_content"
-                                  android:layout_weight="1"
-                                  android:text="Ask Tutor Feedback" />
-
-                              <Space
-                                  android:layout_width="8dp"
-                                  android:layout_height="wrap_content" />
-
-                              <Button
-                                  android:id="@+id/btnTutorSpeakCoaching"
-                                  android:layout_width="0dp"
-                                  android:layout_height="wrap_content"
-                                  android:layout_weight="1"
-                                  android:text="Hear Model" />
-                          </LinearLayout>
-
-                          <TextView
-                              android:id="@+id/tvTutorFeedback"
-                              android:layout_width="match_parent"
-                              android:layout_height="wrap_content"
-                              android:layout_marginTop="8dp"
-                              android:text="Tutor coaching feedback will appear here."
-                              android:textSize="13sp" />
-                      </LinearLayout>
-                  </com.google.android.material.card.MaterialCardView>
-
+                      android:text="Settings"
+                      android:textColor="#E2E8F0"
+                      app:backgroundTint="#1E293B" />
               </LinearLayout>
-          </ScrollView>
+
+              <!-- Face-to-Face Tutor Card -->
+              <com.google.android.material.card.MaterialCardView
+                  android:id="@+id/cardTutorStage"
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_marginTop="10dp"
+                  app:cardBackgroundColor="#111827"
+                  app:cardCornerRadius="16dp"
+                  app:strokeColor="#1E293B"
+                  app:strokeWidth="1dp"
+                  app:layout_constraintEnd_toEndOf="parent"
+                  app:layout_constraintStart_toStartOf="parent"
+                  app:layout_constraintTop_toBottomOf="@id/topBar">
+
+                  <LinearLayout
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="vertical"
+                      android:padding="14dp">
+
+                      <TextView
+                          android:id="@+id/tvTutorQuestion"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:text="Tutor asks: How do you greet someone politely in Arabic?"
+                          android:textColor="#F8FAFC"
+                          android:textSize="16sp"
+                          android:textStyle="bold" />
+
+                      <TextView
+                          android:id="@+id/tvTargetPhrase"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:layout_marginTop="8dp"
+                          android:text="السَّلَامُ عَلَيْكُمْ"
+                          android:textColor="#38BDF8"
+                          android:textSize="26sp"
+                          android:textStyle="bold" />
+
+                      <TextView
+                          android:id="@+id/tvPronunciationMeaning"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:layout_marginTop="2dp"
+                          android:text="As-salamu alaykum — Peace be upon you"
+                          android:textColor="#CBD5E1"
+                          android:textSize="14sp" />
+
+                      <TextView
+                          android:id="@+id/tvTutorNote"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:layout_marginTop="6dp"
+                          android:text="Rule: Standard greeting; reply 'Wa alaykum as-salam'."
+                          android:textColor="#94A3B8"
+                          android:textSize="12sp" />
+
+                      <LinearLayout
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:layout_marginTop="10dp"
+                          android:orientation="horizontal">
+
+                          <com.google.android.material.button.MaterialButton
+                              android:id="@+id/btnTutorAsk"
+                              style="@style/Widget.Material3.Button.TonalButton"
+                              android:layout_width="0dp"
+                              android:layout_height="wrap_content"
+                              android:layout_weight="1"
+                              android:text="Tutor Ask"
+                              android:textColor="#F8FAFC"
+                              app:backgroundTint="#1E293B" />
+
+                          <Space
+                              android:layout_width="6dp"
+                              android:layout_height="wrap_content" />
+
+                          <com.google.android.material.button.MaterialButton
+                              android:id="@+id/btnRepeatSlow"
+                              style="@style/Widget.Material3.Button.TonalButton"
+                              android:layout_width="0dp"
+                              android:layout_height="wrap_content"
+                              android:layout_weight="1"
+                              android:text="Speak Slow"
+                              android:textColor="#F8FAFC"
+                              app:backgroundTint="#1E293B" />
+
+                          <Space
+                              android:layout_width="6dp"
+                              android:layout_height="wrap_content" />
+
+                          <com.google.android.material.button.MaterialButton
+                              android:id="@+id/btnNextDrill"
+                              style="@style/Widget.Material3.Button"
+                              android:layout_width="0dp"
+                              android:layout_height="wrap_content"
+                              android:layout_weight="1"
+                              android:text="Next"
+                              app:backgroundTint="#0284C7" />
+                      </LinearLayout>
+                  </LinearLayout>
+              </com.google.android.material.card.MaterialCardView>
+
+              <!-- Live Conversation Transcript -->
+              <ScrollView
+                  android:id="@+id/svTranscript"
+                  android:layout_width="0dp"
+                  android:layout_height="0dp"
+                  android:layout_marginTop="10dp"
+                  android:layout_marginBottom="10dp"
+                  android:background="#111827"
+                  android:padding="12dp"
+                  app:layout_constraintBottom_toTopOf="@id/inputBox"
+                  app:layout_constraintEnd_toEndOf="parent"
+                  app:layout_constraintStart_toStartOf="parent"
+                  app:layout_constraintTop_toBottomOf="@id/cardTutorStage">
+
+                  <TextView
+                      android:id="@+id/tvConversationLog"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:lineSpacingExtra="4dp"
+                      android:text="Tutor: Welcome! I am your face-to-face tutor. Speak your answer or ask any doubt—I will answer and guide you by voice."
+                      android:textColor="#E2E8F0"
+                      android:textSize="14sp" />
+              </ScrollView>
+
+              <!-- Speak / Doubt / Reply Controls -->
+              <LinearLayout
+                  android:id="@+id/inputBox"
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:orientation="vertical"
+                  app:layout_constraintBottom_toBottomOf="parent"
+                  app:layout_constraintEnd_toEndOf="parent"
+                  app:layout_constraintStart_toStartOf="parent">
+
+                  <LinearLayout
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:gravity="center_vertical"
+                      android:orientation="horizontal">
+
+                      <EditText
+                          android:id="@+id/etUserSpeechOrDoubt"
+                          android:layout_width="0dp"
+                          android:layout_height="46dp"
+                          android:layout_weight="1"
+                          android:background="#1E293B"
+                          android:hint="Speak or type answer / ask a doubt..."
+                          android:inputType="text"
+                          android:paddingHorizontal="12dp"
+                          android:textColor="#F8FAFC"
+                          android:textColorHint="#64748B"
+                          android:textSize="14sp" />
+
+                      <Space
+                          android:layout_width="8dp"
+                          android:layout_height="wrap_content" />
+
+                      <com.google.android.material.button.MaterialButton
+                          android:id="@+id/btnMicSpeak"
+                          android:layout_width="wrap_content"
+                          android:layout_height="46dp"
+                          android:text="Speak"
+                          app:backgroundTint="#0D9488" />
+                  </LinearLayout>
+
+                  <LinearLayout
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_marginTop="8dp"
+                      android:orientation="horizontal">
+
+                      <com.google.android.material.button.MaterialButton
+                          android:id="@+id/btnSubmitAnswer"
+                          style="@style/Widget.Material3.Button"
+                          android:layout_width="0dp"
+                          android:layout_height="wrap_content"
+                          android:layout_weight="1"
+                          android:text="Check Answer"
+                          app:backgroundTint="#0284C7" />
+
+                      <Space
+                          android:layout_width="8dp"
+                          android:layout_height="wrap_content" />
+
+                      <com.google.android.material.button.MaterialButton
+                          android:id="@+id/btnAskDoubt"
+                          style="@style/Widget.Material3.Button.TonalButton"
+                          android:layout_width="0dp"
+                          android:layout_height="wrap_content"
+                          android:layout_weight="1"
+                          android:text="Ask Doubt (Voice)"
+                          android:textColor="#F8FAFC"
+                          app:backgroundTint="#1E293B" />
+                  </LinearLayout>
+              </LinearLayout>
+
+          </androidx.constraintlayout.widget.ConstraintLayout>
           EOF
 
           cat << 'EOF' > app/src/main/java/com/km/lingual/CurriculumModels.kt
@@ -540,20 +494,23 @@ jobs:
           data class LanguageOption(
               val code: String,
               val label: String,
-              val localeTag: String
+              val localeTag: String,
+              val famousBookTitle: String
           )
 
           data class DrillItem(
+              val tutorQuestion: String,
               val targetText: String,
               val transliteration: String,
               val meaning: String,
               val grammarTip: String,
-              val tutorPrompt: String
+              val expectedKeywords: List<String>
           )
 
-          data class LessonStep(
-              val stepNumber: Int,
+          data class LessonPart(
+              val partNumber: Int,
               val title: String,
+              val bookReference: String,
               val tutorIntro: String,
               val drills: List<DrillItem>
           )
@@ -562,7 +519,8 @@ jobs:
               val languageCode: String,
               val languageName: String,
               val localeTag: String,
-              val steps: List<LessonStep>
+              val famousBookTitle: String,
+              val parts: List<LessonPart>
           )
           EOF
 
@@ -581,32 +539,32 @@ jobs:
           object PackManager {
 
               val supportedLanguages = listOf(
-                  LanguageOption("ar", "Arabic (العربية)", "ar-SA"),
-                  LanguageOption("ta", "Tamil (தமிழ்)", "ta-IN"),
-                  LanguageOption("es", "Spanish (Español)", "es-ES"),
-                  LanguageOption("fr", "French (Français)", "fr-FR"),
-                  LanguageOption("de", "German (Deutsch)", "de-DE"),
-                  LanguageOption("ja", "Japanese (日本語)", "ja-JP"),
-                  LanguageOption("hi", "Hindi (हिन्दी)", "hi-IN")
+                  LanguageOption("ar", "Arabic (العربية)", "ar-SA", "Al-Arabiyyah Bayna Yadayk & Madinah Book 1"),
+                  LanguageOption("ta", "Tamil (தமிழ்)", "ta-IN", "Thirukkural & Spoken Tamil Foundation"),
+                  LanguageOption("es", "Spanish (Español)", "es-ES", "Aula Internacional & Instituto Cervantes"),
+                  LanguageOption("fr", "French (Français)", "fr-FR", "Grammaire Progressive & Taxi!"),
+                  LanguageOption("de", "German (Deutsch)", "de-DE", "Menschen & Schritte International"),
+                  LanguageOption("ja", "Japanese (日本語)", "ja-JP", "Genki I & Minna no Nihongo"),
+                  LanguageOption("hi", "Hindi (हिन्दी)", "hi-IN", "Teach Yourself Hindi & Conversational Drills")
               )
 
               private fun packFile(context: Context, langCode: String): File {
                   val dir = File(context.filesDir, "lingual_packs")
                   if (!dir.exists()) dir.mkdirs()
-                  return File(dir, "pack_$langCode.json")
+                  return File(dir, "pack_${langCode}_v2.json")
               }
 
               fun hasOfflinePack(context: Context, langCode: String): Boolean {
                   val f = packFile(context, langCode)
-                  return f.exists() && f.length() > 20
+                  return f.exists() && f.length() > 30
               }
 
               fun loadOfflinePack(context: Context, option: LanguageOption): LanguagePack {
                   val f = packFile(context, option.code)
-                  if (f.exists() && f.length() > 20) {
+                  if (f.exists() && f.length() > 30) {
                       return parsePackJson(f.readText(), option)
                   }
-                  val generated = buildDeepCurriculumPack(option)
+                  val generated = buildOrderedCurriculumPack(option)
                   f.writeText(packToJson(generated))
                   return generated
               }
@@ -617,7 +575,7 @@ jobs:
                   customUrlTemplate: String
               ): Result<LanguagePack> = withContext(Dispatchers.IO) {
                   try {
-                      val basePack = if (customUrlTemplate.isNotBlank()) {
+                      val pack = if (customUrlTemplate.isNotBlank()) {
                           val resolvedUrl = customUrlTemplate.replace("{lang}", option.code)
                           val conn = (URL(resolvedUrl).openConnection() as HttpURLConnection).apply {
                               connectTimeout = 8000
@@ -631,7 +589,7 @@ jobs:
                               parsePackJson(body, option)
                           } else {
                               conn.disconnect()
-                              buildDeepCurriculumPack(option)
+                              buildOrderedCurriculumPack(option)
                           }
                       } else {
                           val conn = (URL("https://raw.githubusercontent.com").openConnection() as HttpURLConnection).apply {
@@ -641,159 +599,272 @@ jobs:
                           }
                           conn.connect()
                           conn.disconnect()
-                          buildDeepCurriculumPack(option)
+                          buildOrderedCurriculumPack(option)
                       }
 
-                      val targetFile = packFile(context, option.code)
-                      targetFile.writeText(packToJson(basePack))
-                      Result.success(basePack)
+                      packFile(context, option.code).writeText(packToJson(pack))
+                      Result.success(pack)
                   } catch (e: Exception) {
                       Result.failure(e)
                   }
               }
 
               private fun packToJson(pack: LanguagePack): String {
-                  val root = JSONObject()
-                  root.put("languageCode", pack.languageCode)
-                  root.put("languageName", pack.languageName)
-                  root.put("localeTag", pack.localeTag)
-                  val stepsArr = JSONArray()
-                  for (step in pack.steps) {
-                      val sObj = JSONObject()
-                      sObj.put("stepNumber", step.stepNumber)
-                      sObj.put("title", step.title)
-                      sObj.put("tutorIntro", step.tutorIntro)
-                      val drillsArr = JSONArray()
-                      for (d in step.drills) {
-                          val dObj = JSONObject()
-                          dObj.put("targetText", d.targetText)
-                          dObj.put("transliteration", d.transliteration)
-                          dObj.put("meaning", d.meaning)
-                          dObj.put("grammarTip", d.grammarTip)
-                          dObj.put("tutorPrompt", d.tutorPrompt)
-                          drillsArr.put(dObj)
+                  val root = JSONObject().apply {
+                      put("languageCode", pack.languageCode)
+                      put("languageName", pack.languageName)
+                      put("localeTag", pack.localeTag)
+                      put("famousBookTitle", pack.famousBookTitle)
+                      val partsArr = JSONArray()
+                      for (part in pack.parts) {
+                          partsArr.put(JSONObject().apply {
+                              put("partNumber", part.partNumber)
+                              put("title", part.title)
+                              put("bookReference", part.bookReference)
+                              put("tutorIntro", part.tutorIntro)
+                              val drillsArr = JSONArray()
+                              for (d in part.drills) {
+                                  drillsArr.put(JSONObject().apply {
+                                      put("tutorQuestion", d.tutorQuestion)
+                                      put("targetText", d.targetText)
+                                      put("transliteration", d.transliteration)
+                                      put("meaning", d.meaning)
+                                      put("grammarTip", d.grammarTip)
+                                      put("expectedKeywords", JSONArray(d.expectedKeywords))
+                                  })
+                              }
+                              put("drills", drillsArr)
+                          })
                       }
-                      sObj.put("drills", drillsArr)
-                      stepsArr.put(sObj)
+                      put("parts", partsArr)
                   }
-                  root.put("steps", stepsArr)
                   return root.toString(2)
               }
 
-              private fun parsePackJson(jsonText: String, fallbackOption: LanguageOption): LanguagePack {
+              private fun parsePackJson(jsonText: String, fallback: LanguageOption): LanguagePack {
                   val root = JSONObject(jsonText)
-                  val code = root.optString("languageCode", fallbackOption.code)
-                  val name = root.optString("languageName", fallbackOption.label)
-                  val locale = root.optString("localeTag", fallbackOption.localeTag)
-                  val stepsJson = root.optJSONArray("steps") ?: JSONArray()
-                  val steps = mutableListOf<LessonStep>()
-                  for (i in 0 until stepsJson.length()) {
-                      val sObj = stepsJson.getJSONObject(i)
-                      val drillsJson = sObj.optJSONArray("drills") ?: JSONArray()
+                  val code = root.optString("languageCode", fallback.code)
+                  val name = root.optString("languageName", fallback.label.substringBefore(" ("))
+                  val locale = root.optString("localeTag", fallback.localeTag)
+                  val book = root.optString("famousBookTitle", fallback.famousBookTitle)
+                  val partsJson = root.optJSONArray("parts") ?: JSONArray()
+                  val parts = mutableListOf<LessonPart>()
+                  for (i in 0 until partsJson.length()) {
+                      val pObj = partsJson.getJSONObject(i)
+                      val drillsJson = pObj.optJSONArray("drills") ?: JSONArray()
                       val drills = mutableListOf<DrillItem>()
                       for (j in 0 until drillsJson.length()) {
                           val dObj = drillsJson.getJSONObject(j)
+                          val kwArr = dObj.optJSONArray("expectedKeywords") ?: JSONArray()
+                          val kw = mutableListOf<String>()
+                          for (k in 0 until kwArr.length()) kw.add(kwArr.optString(k, ""))
                           drills.add(
                               DrillItem(
+                                  tutorQuestion = dObj.optString("tutorQuestion", "Repeat the target phrase."),
                                   targetText = dObj.optString("targetText", ""),
                                   transliteration = dObj.optString("transliteration", ""),
                                   meaning = dObj.optString("meaning", ""),
                                   grammarTip = dObj.optString("grammarTip", ""),
-                                  tutorPrompt = dObj.optString("tutorPrompt", "Repeat aloud clearly.")
+                                  expectedKeywords = kw.filter { it.isNotBlank() }
                               )
                           )
                       }
-                      steps.add(
-                          LessonStep(
-                              stepNumber = sObj.optInt("stepNumber", i + 1),
-                              title = sObj.optString("title", "Step ${i + 1}"),
-                              tutorIntro = sObj.optString("tutorIntro", "Listen closely and repeat."),
+                      parts.add(
+                          LessonPart(
+                              partNumber = pObj.optInt("partNumber", i + 1),
+                              title = pObj.optString("title", "Part ${i + 1}"),
+                              bookReference = pObj.optString("bookReference", book),
+                              tutorIntro = pObj.optString("tutorIntro", "Listen closely and answer aloud."),
                               drills = drills
                           )
                       )
                   }
-                  if (steps.isEmpty()) return buildDeepCurriculumPack(fallbackOption)
-                  return LanguagePack(code, name, locale, steps)
+                  if (parts.isEmpty()) return buildOrderedCurriculumPack(fallback)
+                  return LanguagePack(code, name, locale, book, parts)
               }
 
-              private fun buildDeepCurriculumPack(option: LanguageOption): LanguagePack {
+              // Master pedagogical sequence applied across ALL languages (Arabic serves as the complete blueprint)
+              fun buildOrderedCurriculumPack(option: LanguageOption): LanguagePack {
                   val langName = option.label.substringBefore(" (")
                   return when (option.code) {
                       "ar" -> LanguagePack(
                           languageCode = "ar",
-                          languageName = langName,
+                          languageName = "Arabic",
                           localeTag = option.localeTag,
-                          steps = listOf(
-                              LessonStep(
-                                  1, "Step 1: Greetings & Politeness",
-                                  "Your tutor note: Start by mastering greeting cadence and polite address. Listen to each phrase twice before speaking.",
+                          famousBookTitle = option.famousBookTitle,
+                          parts = listOf(
+                              LessonPart(
+                                  1, "Part 1: Greetings & Politeness", "Al-Arabiyyah Bayna Yadayk • Unit 1",
+                                  "Let's begin Part 1 face-to-face. I will ask you how to greet and thank someone in Arabic.",
                                   listOf(
-                                      DrillItem("السَّلَامُ عَلَيْكُمْ", "As-salamu alaykum", "Peace be upon you (standard greeting)", "Traditional opening greeting; reply with 'Wa alaykum as-salam'.", "How do you greet someone politely in Arabic?"),
-                                      DrillItem("مَرْحَبًا، كَيْفَ حَالُكَ؟", "Marhaban, kayfa haluka?", "Hello, how are you? (to a male)", "Notice '-uka' for masculine singular; '-uki' is used for a female listener.", "Ask a male friend how he is doing."),
-                                      DrillItem("شُكْرًا جَزِيلًا", "Shukran jazilan", "Thank you very much", "'Shukran' means thanks; 'jazilan' intensifies it to 'very much'.", "How do you say 'Thank you very much'?")
+                                      DrillItem(
+                                          "How do you greet someone with peace in Arabic?",
+                                          "السَّلَامُ عَلَيْكُمْ", "As-salamu alaykum", "Peace be upon you",
+                                          "Standard greeting; reply with 'Wa alaykum as-salam'.",
+                                          listOf("salam", "salaam", "peace", "alaykum", "السلام")
+                                      ),
+                                      DrillItem(
+                                          "Ask a male friend how he is doing in Arabic.",
+                                          "مَرْحَبًا، كَيْفَ حَالُكَ؟", "Marhaban, kayfa haluka?", "Hello, how are you? (male)",
+                                          "'-uka' marks masculine 'you'; '-uki' marks feminine 'you'.",
+                                          listOf("kayfa", "haluka", "how are you", "marhaban", "كيف")
+                                      ),
+                                      DrillItem(
+                                          "How do you say 'Thank you very much' in Arabic?",
+                                          "شُكْرًا جَزِيلًا", "Shukran jazilan", "Thank you very much",
+                                          "'Shukran' = thanks; 'jazilan' = abundantly/very much.",
+                                          listOf("shukran", "jazilan", "thank", "thanks", "شكرا")
+                                      )
                                   )
                               ),
-                              LessonStep(
-                                  2, "Step 2: Core Verbs & Daily Actions",
-                                  "Your tutor note: Verbs carry tense and subject markers. Focus on present action patterns.",
+                              LessonPart(
+                                  2, "Part 2: Demonstratives & Core Nouns", "Madinah Arabic Reader • Book 1",
+                                  "Now in Part 2, we practice pointing out objects and asking 'What is this?'",
                                   listOf(
-                                      DrillItem("أُرِيدُ أَنْ أَتَعَلَّمَ", "Uridu an ata'allama", "I want to learn", "'Uridu' = I want; 'an' links to the subjunctive verb 'ata'allama' = to learn.", "Say 'I want to learn' in Arabic."),
-                                      DrillItem("أَفْهَمُ قَلِيلًا", "Afhamu qalilan", "I understand a little", "'Afhamu' (I understand) comes from root ف-ه-م (f-h-m); 'qalilan' = a little.", "How do you tell someone you understand a little?")
+                                      DrillItem(
+                                          "How do you ask 'What is this?' in Arabic?",
+                                          "مَا هَذَا؟", "Ma hadha?", "What is this?",
+                                          "'Ma' asks 'what' for non-human things; 'hadha' = this (masculine).",
+                                          listOf("hadha", "hatha", "what is this", "this", "ماذا")
+                                      ),
+                                      DrillItem(
+                                          "Say 'This is a book' in Arabic.",
+                                          "هَذَا كِتَابٌ", "Hadha kitabun", "This is a book",
+                                          "Indefinite noun takes '-un' (tanween) when no 'al-' prefix is present.",
+                                          listOf("kitab", "book", "hadha", "this", "كتاب")
+                                      )
                                   )
                               ),
-                              LessonStep(
-                                  3, "Step 3: Questions & Real-Life Practice",
-                                  "Your tutor note: Combine question words with clear nouns to navigate real conversations.",
+                              LessonPart(
+                                  3, "Part 3: Verbs, Roots & Daily Actions", "Madinah Book 2 & Root System",
+                                  "In Part 3, we move into verbs and tri-literal roots so you can express intent and comprehension.",
                                   listOf(
-                                      DrillItem("أَيْنَ المَحَطَّةُ؟", "Ayna al-mahattatu?", "Where is the station?", "'Ayna' means 'where'. Putting 'al-' before a noun makes it definite ('the').", "Ask where the station is.")
+                                      DrillItem(
+                                          "How do you say 'I want to learn' in Arabic?",
+                                          "أُرِيدُ أَنْ أَتَعَلَّمَ", "Uridu an ata'allama", "I want to learn",
+                                          "'Uridu' = I want; 'an' + subjunctive 'ata'allama' = to learn.",
+                                          listOf("uridu", "ata'allam", "learn", "want", "أريد")
+                                      ),
+                                      DrillItem(
+                                          "Say 'I understand a little' in Arabic.",
+                                          "أَفْهَمُ قَلِيلًا", "Afhamu qalilan", "I understand a little",
+                                          "Root ف-ه-م (f-h-m) relates to understanding; 'qalilan' = a little.",
+                                          listOf("afham", "understand", "qalil", "little", "أفهم")
+                                      )
+                                  )
+                              ),
+                              LessonPart(
+                                  4, "Part 4: Questions, Places & Dialogue", "Al-Arabiyyah Bayna Yadayk • Dialogue Drills",
+                                  "In Part 4, we combine location questions and real-world travel/daily dialogue.",
+                                  listOf(
+                                      DrillItem(
+                                          "Ask 'Where is the station?' in Arabic.",
+                                          "أَيْنَ المَحَطَّةُ؟", "Ayna al-mahattatu?", "Where is the station?",
+                                          "'Ayna' = where; 'al-' makes 'mahattah' (station) definite.",
+                                          listOf("ayna", "where", "mahatta", "station", "أين")
+                                      )
                                   )
                               )
                           )
                       )
-                      "ta" -> LanguagePack(
-                          languageCode = "ta",
-                          languageName = langName,
-                          localeTag = option.localeTag,
-                          steps = listOf(
-                              LessonStep(
-                                  1, "Step 1: Greetings & Respect",
-                                  "Your tutor note: Tamil uses respectful verb endings and clear vowel lengths. Listen carefully to short vs. long vowels.",
-                                  listOf(
-                                      DrillItem("வணக்கம், எப்படி இருக்கிறீர்கள்?", "Vanakkam, eppadi irukkirirgal?", "Hello, how are you? (respectful)", "'-irgal' adds polite/respectful plural form to the verb.", "Greet someone respectfully and ask how they are."),
-                                      DrillItem("மிக்க நன்றி", "Mikka nandri", "Thank you very much", "'Nandri' means thanks; 'mikka' emphasizes 'very much'.", "Say 'Thank you very much' in Tamil.")
-                                  )
-                              ),
-                              LessonStep(
-                                  2, "Step 2: Learning & Everyday Verbs",
-                                  "Your tutor note: Practice action roots and sentence word order (Subject - Object - Verb).",
-                                  listOf(
-                                      DrillItem("எனக்கு தமிழ் கற்றுக்கொள்ள வேண்டும்", "Enakku Tamil katrukkolla vendum", "I want to learn Tamil", "'Enakku' = to me; 'vendum' expresses need/desire.", "Express that you want to learn Tamil.")
+                      else -> {
+                          val sampleGreeting = when (option.code) {
+                              "ta" -> DrillItem(
+                                  "How do you greet someone respectfully in Tamil?",
+                                  "வணக்கம், எப்படி இருக்கிறீர்கள்?", "Vanakkam, eppadi irukkirirgal?", "Hello, how are you? (respectful)",
+                                  "Respectful plural ending '-irgal' shows polite address in Tamil.",
+                                  listOf("vanakkam", "eppadi", "hello", "how are you", "வணக்கம்")
+                              )
+                              "es" -> DrillItem(
+                                  "How do you ask 'How are you?' politely in Spanish?",
+                                  "¿Cómo estás? / ¿Cómo está?", "Como estas? / Como esta?", "How are you? (informal / formal)",
+                                  "'Estas' is informal singular; 'esta' is formal singular (usted).",
+                                  listOf("como estas", "como esta", "how are you", "hola", "como")
+                              )
+                              "fr" -> DrillItem(
+                                  "How do you say 'Good morning / Hello' politely in French?",
+                                  "Bonjour, comment allez-vous ?", "Bon-zhoor, ko-mahn ta-lay-voo", "Hello / Good day, how are you?",
+                                  "'Bonjour' is standard daytime greeting; 'vous' is formal/plural.",
+                                  listOf("bonjour", "comment allez", "hello", "how are you")
+                              )
+                              "de" -> DrillItem(
+                                  "How do you say 'Hello, how are you?' in German?",
+                                  "Hallo, wie geht es dir?", "Hah-lo, vee gate ess deer", "Hello, how is it going for you?",
+                                  "'Wie geht es dir?' is standard informal phrasing in German.",
+                                  listOf("hallo", "wie geht", "how are you", "guten tag")
+                              )
+                              "ja" -> DrillItem(
+                                  "How do you say 'Good morning' politely in Japanese?",
+                                  "おはようございます", "Ohayo gozaimasu", "Good morning (polite)",
+                                  "Adding 'gozaimasu' elevates 'ohayo' to polite speech.",
+                                  listOf("ohayo", "gozaimasu", "good morning", "hello")
+                              )
+                              else -> DrillItem(
+                                  "How do you say 'Hello, how are you?' in Hindi?",
+                                  "नमस्ते, आप कैसे हैं?", "Namaste, aap kaise hain?", "Hello, how are you? (respectful)",
+                                  "'Aap' is respectful 'you'; 'kaise' agrees with masculine singular.",
+                                  listOf("namaste", "kaise", "how are you", "hello")
+                              )
+                          }
+
+                          val secondDrill = when (option.code) {
+                              "ta" -> DrillItem(
+                                  "Say 'I want to learn Tamil' in Tamil.",
+                                  "எனக்கு தமிழ் கற்றுக்கொள்ள வேண்டும்", "Enakku Tamil katrukkolla vendum", "I want to learn Tamil",
+                                  "Tamil follows Subject–Object–Verb order with dative 'Enakku'.",
+                                  listOf("enakku", "katrukkolla", "vendum", "learn", "tamil")
+                              )
+                              else -> DrillItem(
+                                  "Say 'I want to learn $langName' in $langName.",
+                                  "I want to learn $langName", "Core learning sentence ($langName)", "Expressing learning goal",
+                                  "Follow Part 1–4 progression: Greetings -> Nouns/Objects -> Verbs -> Dialogue.",
+                                  listOf("learn", langName.lowercase(), "want")
+                              )
+                          }
+
+                          LanguagePack(
+                              languageCode = option.code,
+                              languageName = langName,
+                              localeTag = option.localeTag,
+                              famousBookTitle = option.famousBookTitle,
+                              parts = listOf(
+                                  LessonPart(
+                                      1, "Part 1: Greetings & Politeness", option.famousBookTitle,
+                                      "Following the master tutor order (Part 1 of 4): start with greetings and polite address.",
+                                      listOf(sampleGreeting)
+                                  ),
+                                  LessonPart(
+                                      2, "Part 2: Demonstratives & Core Nouns", option.famousBookTitle,
+                                      "Part 2 of 4: identify objects and ask direct questions.",
+                                      listOf(
+                                          DrillItem(
+                                              "Ask 'What is this?' in $langName.",
+                                              "What is this? ($langName)", "Core object inquiry", "Asking 'what is this' in $langName",
+                                              "Core question structure for naming everyday objects.",
+                                              listOf("what", "this", langName.lowercase())
+                                          )
+                                      )
+                                  ),
+                                  LessonPart(
+                                      3, "Part 3: Verbs, Roots & Daily Actions", option.famousBookTitle,
+                                      "Part 3 of 4: practice action verbs and expressing intentions.",
+                                      listOf(secondDrill)
+                                  ),
+                                  LessonPart(
+                                      4, "Part 4: Questions, Places & Dialogue", option.famousBookTitle,
+                                      "Part 4 of 4: combine location words into real conversations.",
+                                      listOf(
+                                          DrillItem(
+                                              "Ask 'Where is the station?' in $langName.",
+                                              "Where is the station? ($langName)", "Navigation question", "Asking for location in $langName",
+                                              "Pair location question words with clear nouns.",
+                                              listOf("where", "station", langName.lowercase())
+                                          )
+                                      )
                                   )
                               )
                           )
-                      )
-                      else -> LanguagePack(
-                          languageCode = option.code,
-                          languageName = langName,
-                          localeTag = option.localeTag,
-                          steps = listOf(
-                              LessonStep(
-                                  1, "Step 1: Foundation & Greetings ($langName)",
-                                  "Your tutor note: We are starting your step-by-step $langName training. Listen to the pronunciation and repeat aloud.",
-                                  listOf(
-                                      DrillItem("Hello! Good morning.", "Core greeting in $langName", "Greeting & opening", "Use standard polite greetings first when opening a conversation.", "Practice greeting in $langName."),
-                                      DrillItem("Thank you very much.", "Polite gratitude in $langName", "Expressing thanks", "Polite gratitude builds rapport in everyday dialogues.", "Practice saying thank you in $langName.")
-                                  )
-                              ),
-                              LessonStep(
-                                  2, "Step 2: Core Sentences & Tutor Drills ($langName)",
-                                  "Your tutor note: Build complete thoughts by combining subject, verb, and context.",
-                                  listOf(
-                                      DrillItem("I am learning this language step by step.", "Practice sentence in $langName", "Learning progression", "Consistent daily repetition in short blocks strengthens memory.", "State that you are learning step by step.")
-                                  )
-                              )
-                          )
-                      )
+                      }
                   }
               }
           }
@@ -802,13 +873,23 @@ jobs:
           cat << 'EOF' > app/src/main/java/com/km/lingual/MainActivity.kt
           package com.km.lingual
 
+          import android.Manifest
+          import android.content.Intent
+          import android.content.pm.PackageManager
           import android.os.Bundle
+          import android.speech.RecognizerIntent
+          import android.speech.SpeechRecognizer
           import android.speech.tts.TextToSpeech
           import android.view.View
           import android.widget.AdapterView
           import android.widget.ArrayAdapter
-          import android.widget.Toast
+          import android.widget.EditText
+          import android.widget.Spinner
+          import android.widget.TextView
+          import androidx.activity.result.contract.ActivityResultContracts
+          import androidx.appcompat.app.AlertDialog
           import androidx.appcompat.app.AppCompatActivity
+          import androidx.core.content.ContextCompat
           import androidx.lifecycle.lifecycleScope
           import com.km.lingual.databinding.ActivityMainBinding
           import kotlinx.coroutines.launch
@@ -820,9 +901,31 @@ jobs:
               private var tts: TextToSpeech? = null
               private var ttsReady = false
 
+              private var selectedLangIndex = 0
               private var currentPack: LanguagePack? = null
-              private var currentStepIndex = 0
+              private var currentPartIndex = 0
               private var currentDrillIndex = 0
+              private var customRemoteUrl = ""
+
+              private val micPermissionLauncher = registerForActivityResult(
+                  ActivityResultContracts.RequestPermission()
+              ) { granted ->
+                  if (granted) startVoiceInput()
+                  else speakTutorReply("Microphone permission is needed so I can hear you speak.")
+              }
+
+              private val speechInputLauncher = registerForActivityResult(
+                  ActivityResultContracts.StartActivityForResult()
+              ) { result ->
+                  if (result.resultCode == RESULT_OK) {
+                      val matches = result.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                      val spoken = matches?.firstOrNull()?.trim().orEmpty()
+                      if (spoken.isNotEmpty()) {
+                          binding.etUserSpeechOrDoubt.setText(spoken)
+                          handleUserUtterance(spoken, isExplicitDoubt = false)
+                      }
+                  }
+              }
 
               override fun onCreate(savedInstanceState: Bundle?) {
                   super.onCreate(savedInstanceState)
@@ -830,26 +933,98 @@ jobs:
                   setContentView(binding.root)
 
                   tts = TextToSpeech(this, this)
+                  loadLanguage(PackManager.supportedLanguages[selectedLangIndex], autoAsk = false)
 
-                  val langLabels = PackManager.supportedLanguages.map { it.label }
-                  binding.spLanguage.adapter = ArrayAdapter(
+                  binding.btnSettings.setOnClickListener { openSettingsDialog() }
+
+                  binding.btnTutorAsk.setOnClickListener {
+                      askCurrentQuestionAloud()
+                  }
+
+                  binding.btnRepeatSlow.setOnClickListener {
+                      val drill = activeDrill() ?: return@setOnClickListener
+                      speakTargetLanguage(drill.targetText, 0.72f)
+                  }
+
+                  binding.btnNextDrill.setOnClickListener {
+                      advanceNextDrill(announce = true)
+                  }
+
+                  binding.btnMicSpeak.setOnClickListener {
+                      if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+                          == PackageManager.PERMISSION_GRANTED
+                      ) {
+                          startVoiceInput()
+                      } else {
+                          micPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+                      }
+                  }
+
+                  binding.btnSubmitAnswer.setOnClickListener {
+                      val input = binding.etUserSpeechOrDoubt.text?.toString()?.trim().orEmpty()
+                      if (input.isEmpty()) {
+                          speakTutorReply("Please speak or type your answer first, or tap Ask Doubt if you have a question.")
+                          return@setOnClickListener
+                      }
+                      handleUserUtterance(input, isExplicitDoubt = false)
+                  }
+
+                  binding.btnAskDoubt.setOnClickListener {
+                      val doubt = binding.etUserSpeechOrDoubt.text?.toString()?.trim().orEmpty()
+                      if (doubt.isEmpty()) {
+                          speakTutorReply("Ask me any doubt about pronunciation, grammar, or words, and I will explain it out loud.")
+                          return@setOnClickListener
+                      }
+                      handleUserUtterance(doubt, isExplicitDoubt = true)
+                  }
+              }
+
+              private fun openSettingsDialog() {
+                  val dialogView = layoutInflater.inflate(R.layout.dialog_settings, null)
+                  val spLang = dialogView.findViewById<Spinner>(R.id.spDialogLanguage)
+                  val spPart = dialogView.findViewById<Spinner>(R.id.spDialogPart)
+                  val etUrl = dialogView.findViewById<EditText>(R.id.etDialogUrl)
+                  val tvPackInfo = dialogView.findViewById<TextView>(R.id.tvDialogPackStatus)
+                  val btnDownload = dialogView.findViewById<View>(R.id.btnDialogDownload)
+                  val btnOffline = dialogView.findViewById<View>(R.id.btnDialogOffline)
+
+                  etUrl.setText(customRemoteUrl)
+                  spLang.adapter = ArrayAdapter(
                       this,
                       android.R.layout.simple_spinner_dropdown_item,
-                      langLabels
+                      PackManager.supportedLanguages.map { it.label }
                   )
+                  spLang.setSelection(selectedLangIndex)
 
-                  binding.spLanguage.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                  fun refreshPartsSpinner(pack: LanguagePack) {
+                      spPart.adapter = ArrayAdapter(
+                          this,
+                          android.R.layout.simple_spinner_dropdown_item,
+                          pack.parts.map { it.title }
+                      )
+                      spPart.setSelection(currentPartIndex.coerceIn(0, (pack.parts.size - 1).coerceAtLeast(0)))
+                      val cached = PackManager.hasOfflinePack(this, pack.languageCode)
+                      tvPackInfo.text = "Book: ${pack.famousBookTitle}\nOffline cache: ${if (cached) "Saved locally" else "Ready to save"}"
+                  }
+
+                  currentPack?.let { refreshPartsSpinner(it) }
+
+                  spLang.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                       override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                          val chosen = PackManager.supportedLanguages[position]
-                          loadLanguageIntoTutor(chosen, preferOfflineOnly = false)
+                          if (position != selectedLangIndex) {
+                              selectedLangIndex = position
+                              val opt = PackManager.supportedLanguages[position]
+                              loadLanguage(opt, autoAsk = true)
+                              currentPack?.let { refreshPartsSpinner(it) }
+                          }
                       }
 
                       override fun onNothingSelected(parent: AdapterView<*>?) {}
                   }
 
-                  binding.spLesson.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                  spPart.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                       override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                          currentStepIndex = position
+                          currentPartIndex = position
                           currentDrillIndex = 0
                           renderCurrentDrill()
                       }
@@ -857,171 +1032,176 @@ jobs:
                       override fun onNothingSelected(parent: AdapterView<*>?) {}
                   }
 
-                  binding.btnDownloadPack.setOnClickListener {
-                      val chosen = selectedLanguage()
-                      val customUrl = binding.etPackUrlTemplate.text?.toString()?.trim().orEmpty()
-                      binding.tvStatus.text = "Downloading ${chosen.label} pack from network..."
+                  btnDownload.setOnClickListener {
+                      val opt = PackManager.supportedLanguages[spLang.selectedItemPosition]
+                      selectedLangIndex = spLang.selectedItemPosition
+                      customRemoteUrl = etUrl.text?.toString()?.trim().orEmpty()
+                      tvPackInfo.text = "Downloading ${opt.label} full curriculum pack..."
                       lifecycleScope.launch {
-                          val result = PackManager.downloadAndSavePack(this@MainActivity, chosen, customUrl)
-                          result.onSuccess { pack ->
+                          val res = PackManager.downloadAndSavePack(this@MainActivity, opt, customRemoteUrl)
+                          res.onSuccess { pack ->
                               currentPack = pack
-                              currentStepIndex = 0
+                              currentPartIndex = 0
                               currentDrillIndex = 0
-                              populateLessonsSpinner(pack)
+                              refreshPartsSpinner(pack)
                               renderCurrentDrill()
-                              binding.tvStatus.text = "Downloaded & saved ${pack.languageName} pack for offline use."
-                              speakInSelectedLanguage("Pack ready for ${pack.languageName}. Let's begin.", 1.0f)
+                              speakTutorReply("Downloaded ${pack.languageName} pack from ${pack.famousBookTitle} for offline use.")
                           }.onFailure { err ->
-                              val fallback = PackManager.loadOfflinePack(this@MainActivity, chosen)
-                              currentPack = fallback
-                              populateLessonsSpinner(fallback)
-                              renderCurrentDrill()
-                              binding.tvStatus.text = "Network note (${err.message ?: "offline"}) — using saved/local pack for ${chosen.label}."
+                              val local = PackManager.loadOfflinePack(this@MainActivity, opt)
+                              currentPack = local
+                              refreshPartsSpinner(local)
+                              speakTutorReply("Using offline pack for ${local.languageName}. ${err.message ?: ""}")
                           }
                       }
                   }
 
-                  binding.btnOfflineMode.setOnClickListener {
-                      val chosen = selectedLanguage()
-                      loadLanguageIntoTutor(chosen, preferOfflineOnly = true)
+                  btnOffline.setOnClickListener {
+                      val opt = PackManager.supportedLanguages[spLang.selectedItemPosition]
+                      selectedLangIndex = spLang.selectedItemPosition
+                      loadLanguage(opt, autoAsk = false)
+                      currentPack?.let { refreshPartsSpinner(it) }
+                      speakTutorReply("Loaded offline pack for ${opt.label.substringBefore(" (")}.")
                   }
 
-                  binding.btnSpeakTarget.setOnClickListener {
-                      val drill = activeDrill() ?: return@setOnClickListener
-                      speakInSelectedLanguage(drill.targetText, 1.0f)
-                  }
-
-                  binding.btnSpeakSlow.setOnClickListener {
-                      val drill = activeDrill() ?: return@setOnClickListener
-                      speakInSelectedLanguage(drill.targetText, 0.72f)
-                  }
-
-                  binding.btnPrevItem.setOnClickListener {
-                      val pack = currentPack ?: return@setOnClickListener
-                      if (currentDrillIndex > 0) {
-                          currentDrillIndex--
-                      } else if (currentStepIndex > 0) {
-                          currentStepIndex--
-                          binding.spLesson.setSelection(currentStepIndex)
-                          currentDrillIndex = (pack.steps[currentStepIndex].drills.size - 1).coerceAtLeast(0)
-                      }
-                      renderCurrentDrill()
-                  }
-
-                  binding.btnNextItem.setOnClickListener {
-                      val pack = currentPack ?: return@setOnClickListener
-                      val drillsCount = pack.steps.getOrNull(currentStepIndex)?.drills?.size ?: 0
-                      if (currentDrillIndex + 1 < drillsCount) {
-                          currentDrillIndex++
-                      } else if (currentStepIndex + 1 < pack.steps.size) {
-                          currentStepIndex++
-                          currentDrillIndex = 0
-                          binding.spLesson.setSelection(currentStepIndex)
-                      } else {
-                          Toast.makeText(this, "Completed all steps in this language pack!", Toast.LENGTH_SHORT).show()
-                      }
-                      renderCurrentDrill()
-                  }
-
-                  binding.btnCheckTutor.setOnClickListener {
-                      val drill = activeDrill() ?: return@setOnClickListener
-                      val attempt = binding.etLearnerAttempt.text?.toString()?.trim().orEmpty()
-                      if (attempt.isEmpty()) {
-                          binding.tvTutorFeedback.text = "Tutor: Try typing a word, transliteration, or meaning first—then I can guide you!"
-                          return@setOnClickListener
-                      }
-                      val normalizedAttempt = attempt.lowercase()
-                      val matchesMeaning = drill.meaning.lowercase().split(" ", ",", "(", ")")
-                          .filter { it.length > 3 }
-                          .any { normalizedAttempt.contains(it) }
-                      val matchesTarget = normalizedAttempt.contains(drill.targetText.lowercase()) ||
-                          normalizedAttempt.contains(drill.transliteration.lowercase().take(6))
-
-                      binding.tvTutorFeedback.text = if (matchesMeaning || matchesTarget) {
-                          "Tutor: Great work! You captured key elements of '${drill.meaning}'. Now listen and repeat '${drill.targetText}' aloud."
-                      } else {
-                          "Tutor: Good effort! Target is '${drill.targetText}' (${drill.transliteration}) — meaning: '${drill.meaning}'. Tip: ${drill.grammarTip}"
-                      }
-                  }
-
-                  binding.btnTutorSpeakCoaching.setOnClickListener {
-                      val drill = activeDrill() ?: return@setOnClickListener
-                      speakInSelectedLanguage("${drill.targetText}. ${drill.meaning}", 0.9f)
-                  }
+                  AlertDialog.Builder(this)
+                      .setTitle("Tutor Settings & Packs")
+                      .setView(dialogView)
+                      .setPositiveButton("Done", null)
+                      .show()
               }
 
-              private fun selectedLanguage(): LanguageOption {
-                  val idx = binding.spLanguage.selectedItemPosition.coerceAtLeast(0)
-                  return PackManager.supportedLanguages[idx]
-              }
-
-              private fun loadLanguageIntoTutor(option: LanguageOption, preferOfflineOnly: Boolean) {
-                  val alreadyStored = PackManager.hasOfflinePack(this, option.code)
+              private fun loadLanguage(option: LanguageOption, autoAsk: Boolean) {
                   val pack = PackManager.loadOfflinePack(this, option)
                   currentPack = pack
-                  currentStepIndex = 0
+                  currentPartIndex = 0
                   currentDrillIndex = 0
-                  populateLessonsSpinner(pack)
                   renderCurrentDrill()
-                  applyTtsLocale(option.localeTag)
-
-                  binding.tvStatus.text = if (alreadyStored) {
-                      "Offline ready: ${pack.languageName} pack loaded from local storage."
-                  } else if (preferOfflineOnly) {
-                      "Offline pack initialized for ${pack.languageName}. Tap 'Download / Sync Pack' anytime to refresh."
-                  } else {
-                      "Selected ${pack.languageName}. Tap 'Download / Sync Pack' to fetch/update or practice offline now."
+                  if (autoAsk) {
+                      askCurrentQuestionAloud()
                   }
               }
 
-              private fun populateLessonsSpinner(pack: LanguagePack) {
-                  val titles = pack.steps.map { it.title }
-                  binding.spLesson.adapter = ArrayAdapter(
-                      this,
-                      android.R.layout.simple_spinner_dropdown_item,
-                      titles
-                  )
-                  binding.spLesson.setSelection(currentStepIndex.coerceIn(0, (titles.size - 1).coerceAtLeast(0)))
-              }
+              private fun activePart(): LessonPart? = currentPack?.parts?.getOrNull(currentPartIndex)
 
-              private fun activeStep(): LessonStep? = currentPack?.steps?.getOrNull(currentStepIndex)
-
-              private fun activeDrill(): DrillItem? = activeStep()?.drills?.getOrNull(currentDrillIndex)
+              private fun activeDrill(): DrillItem? = activePart()?.drills?.getOrNull(currentDrillIndex)
 
               private fun renderCurrentDrill() {
-                  val step = activeStep() ?: return
+                  val pack = currentPack ?: return
+                  val part = activePart() ?: return
                   val drill = activeDrill() ?: return
-                  binding.tvTutorGuidance.text = step.tutorIntro
-                  binding.tvItemCounter.text = "Step ${step.stepNumber} • Drill ${currentDrillIndex + 1} / ${step.drills.size}"
-                  binding.tvTargetScript.text = drill.targetText
-                  binding.tvTransliteration.text = "Pronunciation: ${drill.transliteration}"
-                  binding.tvMeaning.text = "Meaning: ${drill.meaning}"
-                  binding.tvGrammarTip.text = "Deep Tutor Note: ${drill.grammarTip}"
-                  binding.tvTutorPrompt.text = "Tutor Prompt: ${drill.tutorPrompt}"
-                  binding.tvTutorFeedback.text = "Tutor ready for your attempt on this step."
+
+                  binding.tvActiveLangPart.text = "${pack.languageName} • ${part.title}"
+                  binding.tvTutorQuestion.text = "Tutor asks: ${drill.tutorQuestion}"
+                  binding.tvTargetPhrase.text = drill.targetText
+                  binding.tvPronunciationMeaning.text = "${drill.transliteration} — ${drill.meaning}"
+                  binding.tvTutorNote.text = "Tip: ${drill.grammarTip}"
               }
 
-              private fun applyTtsLocale(localeTag: String) {
-                  if (!ttsReady) return
-                  val locale = Locale.forLanguageTag(localeTag)
-                  val res = tts?.setLanguage(locale)
-                  if (res == TextToSpeech.LANG_MISSING_DATA || res == TextToSpeech.LANG_NOT_SUPPORTED) {
-                      binding.tvStatus.append(" (Note: Install ${locale.displayLanguage} voice in Android TTS settings for native audio.)")
+              private fun askCurrentQuestionAloud() {
+                  val drill = activeDrill() ?: return
+                  val prompt = "${drill.tutorQuestion} In ${currentPack?.languageName ?: "the target language"}, we say ${drill.transliteration}."
+                  appendLog("Tutor", prompt)
+                  speakTutorReply(prompt)
+              }
+
+              private fun advanceNextDrill(announce: Boolean) {
+                  val pack = currentPack ?: return
+                  val drills = activePart()?.drills.orEmpty()
+                  if (currentDrillIndex + 1 < drills.size) {
+                      currentDrillIndex++
+                  } else if (currentPartIndex + 1 < pack.parts.size) {
+                      currentPartIndex++
+                      currentDrillIndex = 0
+                  } else {
+                      currentPartIndex = 0
+                      currentDrillIndex = 0
+                      speakTutorReply("You completed all parts of ${pack.languageName}! Starting Part 1 review.")
+                  }
+                  renderCurrentDrill()
+                  if (announce) {
+                      askCurrentQuestionAloud()
                   }
               }
 
-              private fun speakInSelectedLanguage(text: String, rate: Float) {
+              private fun handleUserUtterance(text: String, isExplicitDoubt: Boolean) {
+                  val drill = activeDrill() ?: return
+                  appendLog("You", text)
+
+                  val lower = text.lowercase()
+                  val looksLikeDoubt = isExplicitDoubt ||
+                      lower.startsWith("why ") || lower.startsWith("how ") ||
+                      lower.startsWith("what ") || lower.contains("doubt") ||
+                      lower.contains("explain") || lower.contains("mean") ||
+                      lower.contains("difference") || lower.contains("pronounce")
+
+                  if (looksLikeDoubt) {
+                      // Answer the learner's doubt by voice and stay on current drill (do NOT advance lesson)
+                      val explanation = when {
+                          lower.contains("pronounce") || lower.contains("speak") || lower.contains("sound") ->
+                              "For ${drill.meaning}, pronounce it as ${drill.transliteration}. ${drill.grammarTip}"
+                          lower.contains("mean") || lower.contains("meaning") ->
+                              "${drill.transliteration} means: ${drill.meaning}. ${drill.grammarTip}"
+                          else ->
+                              "Here is your answer: ${drill.grammarTip} The phrase ${drill.transliteration} means ${drill.meaning}."
+                      }
+                      appendLog("Tutor (Doubt Answer)", explanation)
+                      speakTutorReply(explanation)
+                      return
+                  }
+
+                  val isCorrect = drill.expectedKeywords.any { kw -> lower.contains(kw.lowercase()) } ||
+                      lower.contains(drill.transliteration.lowercase().take(5).trim())
+
+                  if (isCorrect) {
+                      val praise = "Well done! ${drill.transliteration} means ${drill.meaning}. Let's move to the next step."
+                      appendLog("Tutor", praise)
+                      speakTutorReply(praise)
+                      advanceNextDrill(announce = true)
+                  } else {
+                      val correction = "Not quite. Listen carefully: for '${drill.tutorQuestion}', the right phrase is ${drill.transliteration}, which means ${drill.meaning}. ${drill.grammarTip} Try saying ${drill.transliteration} again."
+                      appendLog("Tutor (Correction)", correction)
+                      speakTutorReply(correction)
+                  }
+              }
+
+              private fun appendLog(speaker: String, message: String) {
+                  val prev = binding.tvConversationLog.text?.toString().orEmpty()
+                  binding.tvConversationLog.text = "$prev\n\n$speaker: $message"
+                  binding.svTranscript.post {
+                      binding.svTranscript.fullScroll(View.FOCUS_DOWN)
+                  }
+              }
+
+              private fun startVoiceInput() {
+                  if (!SpeechRecognizer.isRecognitionAvailable(this)) {
+                      speakTutorReply("Speech recognition is not available on this device. You can type your answer or doubt.")
+                      return
+                  }
+                  val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+                      putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+                      putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak your answer or ask your tutor...")
+                  }
+                  speechInputLauncher.launch(intent)
+              }
+
+              private fun speakTutorReply(text: String) {
                   if (!ttsReady || text.isBlank()) return
-                  val option = selectedLanguage()
-                  tts?.setLanguage(Locale.forLanguageTag(option.localeTag))
+                  tts?.language = Locale.US
+                  tts?.setSpeechRate(0.95f)
+                  tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "tutor_speech")
+              }
+
+              private fun speakTargetLanguage(text: String, rate: Float) {
+                  if (!ttsReady || text.isBlank()) return
+                  val localeTag = currentPack?.localeTag ?: "en-US"
+                  tts?.language = Locale.forLanguageTag(localeTag)
                   tts?.setSpeechRate(rate)
-                  tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "kmlingual_utterance")
+                  tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "target_speech")
               }
 
               override fun onInit(status: Int) {
                   if (status == TextToSpeech.SUCCESS) {
                       ttsReady = true
-                      applyTtsLocale(selectedLanguage().localeTag)
                   }
               }
 
@@ -1031,6 +1211,88 @@ jobs:
                   super.onDestroy()
               }
           }
+          EOF
+
+          cat << 'EOF' > app/src/main/res/layout/dialog_settings.xml
+          <?xml version="1.0" encoding="utf-8"?>
+          <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:padding="16dp">
+
+              <LinearLayout
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="vertical">
+
+                  <TextView
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:text="Language"
+                      android:textStyle="bold" />
+
+                  <Spinner
+                      android:id="@+id/spDialogLanguage"
+                      android:layout_width="match_parent"
+                      android:layout_height="48dp"
+                      android:layout_marginTop="4dp" />
+
+                  <TextView
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_marginTop="10dp"
+                      android:text="Curriculum Part (Ordered)"
+                      android:textStyle="bold" />
+
+                  <Spinner
+                      android:id="@+id/spDialogPart"
+                      android:layout_width="match_parent"
+                      android:layout_height="48dp"
+                      android:layout_marginTop="4dp" />
+
+                  <TextView
+                      android:id="@+id/tvDialogPackStatus"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_marginTop="10dp"
+                      android:text="Offline pack status"
+                      android:textSize="13sp" />
+
+                  <EditText
+                      android:id="@+id/etDialogUrl"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_marginTop="8dp"
+                      android:hint="Optional custom JSON pack URL ({lang})"
+                      android:inputType="textUri"
+                      android:textSize="12sp" />
+
+                  <LinearLayout
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_marginTop="12dp"
+                      android:orientation="horizontal">
+
+                      <Button
+                          android:id="@+id/btnDialogDownload"
+                          android:layout_width="0dp"
+                          android:layout_height="wrap_content"
+                          android:layout_weight="1"
+                          android:text="Download Pack" />
+
+                      <Space
+                          android:layout_width="8dp"
+                          android:layout_height="wrap_content" />
+
+                      <Button
+                          android:id="@+id/btnDialogOffline"
+                          android:layout_width="0dp"
+                          android:layout_height="wrap_content"
+                          android:layout_weight="1"
+                          android:text="Use Offline" />
+                  </LinearLayout>
+              </LinearLayout>
+          </ScrollView>
           EOF
 
       - name: Build Debug APK
