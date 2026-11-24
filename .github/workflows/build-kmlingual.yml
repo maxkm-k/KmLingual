@@ -86,8 +86,8 @@ jobs:
                   applicationId "com.km.lingual"
                   minSdk 24
                   targetSdk 34
-                  versionCode 2
-                  versionName "2.0"
+                  versionCode 3
+                  versionName "3.0"
               }
 
               buildTypes {
@@ -271,7 +271,7 @@ jobs:
                           android:id="@+id/tvActiveLangPart"
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
-                          android:text="Arabic • Part 1: Greetings &amp; Politeness"
+                          android:text="Arabic • Arabic Tutor • Lesson 1"
                           android:textColor="#38BDF8"
                           android:textSize="12sp" />
                   </LinearLayout>
@@ -286,7 +286,7 @@ jobs:
                       app:backgroundTint="#1E293B" />
               </LinearLayout>
 
-              <!-- Face-to-Face Tutor Card -->
+              <!-- Face-to-Face Tutor Lesson Card -->
               <com.google.android.material.card.MaterialCardView
                   android:id="@+id/cardTutorStage"
                   android:layout_width="0dp"
@@ -310,7 +310,7 @@ jobs:
                           android:id="@+id/tvTutorQuestion"
                           android:layout_width="match_parent"
                           android:layout_height="wrap_content"
-                          android:text="Tutor asks: How do you greet someone politely in Arabic?"
+                          android:text="Tutor asks: How do you greet someone with peace in Arabic?"
                           android:textColor="#F8FAFC"
                           android:textSize="16sp"
                           android:textStyle="bold" />
@@ -322,7 +322,7 @@ jobs:
                           android:layout_marginTop="8dp"
                           android:text="السَّلَامُ عَلَيْكُمْ"
                           android:textColor="#38BDF8"
-                          android:textSize="26sp"
+                          android:textSize="28sp"
                           android:textStyle="bold" />
 
                       <TextView
@@ -339,7 +339,7 @@ jobs:
                           android:layout_width="match_parent"
                           android:layout_height="wrap_content"
                           android:layout_marginTop="6dp"
-                          android:text="Rule: Standard greeting; reply 'Wa alaykum as-salam'."
+                          android:text="Arabic Tutor Note: Standard greeting; reply with 'Wa alaykum as-salam'."
                           android:textColor="#94A3B8"
                           android:textSize="12sp" />
 
@@ -355,7 +355,7 @@ jobs:
                               android:layout_width="0dp"
                               android:layout_height="wrap_content"
                               android:layout_weight="1"
-                              android:text="Tutor Ask"
+                              android:text="Listen Native"
                               android:textColor="#F8FAFC"
                               app:backgroundTint="#1E293B" />
 
@@ -369,7 +369,7 @@ jobs:
                               android:layout_width="0dp"
                               android:layout_height="wrap_content"
                               android:layout_weight="1"
-                              android:text="Speak Slow"
+                              android:text="Slow Voice"
                               android:textColor="#F8FAFC"
                               app:backgroundTint="#1E293B" />
 
@@ -383,13 +383,13 @@ jobs:
                               android:layout_width="0dp"
                               android:layout_height="wrap_content"
                               android:layout_weight="1"
-                              android:text="Next"
+                              android:text="Next Lesson"
                               app:backgroundTint="#0284C7" />
                       </LinearLayout>
                   </LinearLayout>
               </com.google.android.material.card.MaterialCardView>
 
-              <!-- Live Conversation Transcript -->
+              <!-- Live Tutor Voice & Conversation Log -->
               <ScrollView
                   android:id="@+id/svTranscript"
                   android:layout_width="0dp"
@@ -408,12 +408,12 @@ jobs:
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content"
                       android:lineSpacingExtra="4dp"
-                      android:text="Tutor: Welcome! I am your face-to-face tutor. Speak your answer or ask any doubt—I will answer and guide you by voice."
+                      android:text="Tutor: Tap Speak to talk with me, or tap Ask Doubt to hear an explanation out loud."
                       android:textColor="#E2E8F0"
                       android:textSize="14sp" />
               </ScrollView>
 
-              <!-- Speak / Doubt / Reply Controls -->
+              <!-- Voice-First Controls -->
               <LinearLayout
                   android:id="@+id/inputBox"
                   android:layout_width="0dp"
@@ -426,48 +426,16 @@ jobs:
                   <LinearLayout
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content"
-                      android:gravity="center_vertical"
                       android:orientation="horizontal">
-
-                      <EditText
-                          android:id="@+id/etUserSpeechOrDoubt"
-                          android:layout_width="0dp"
-                          android:layout_height="46dp"
-                          android:layout_weight="1"
-                          android:background="#1E293B"
-                          android:hint="Speak or type answer / ask a doubt..."
-                          android:inputType="text"
-                          android:paddingHorizontal="12dp"
-                          android:textColor="#F8FAFC"
-                          android:textColorHint="#64748B"
-                          android:textSize="14sp" />
-
-                      <Space
-                          android:layout_width="8dp"
-                          android:layout_height="wrap_content" />
 
                       <com.google.android.material.button.MaterialButton
                           android:id="@+id/btnMicSpeak"
-                          android:layout_width="wrap_content"
-                          android:layout_height="46dp"
-                          android:text="Speak"
-                          app:backgroundTint="#0D9488" />
-                  </LinearLayout>
-
-                  <LinearLayout
-                      android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:layout_marginTop="8dp"
-                      android:orientation="horizontal">
-
-                      <com.google.android.material.button.MaterialButton
-                          android:id="@+id/btnSubmitAnswer"
                           style="@style/Widget.Material3.Button"
                           android:layout_width="0dp"
-                          android:layout_height="wrap_content"
+                          android:layout_height="50dp"
                           android:layout_weight="1"
-                          android:text="Check Answer"
-                          app:backgroundTint="#0284C7" />
+                          android:text="Speak to Tutor"
+                          app:backgroundTint="#0D9488" />
 
                       <Space
                           android:layout_width="8dp"
@@ -477,9 +445,40 @@ jobs:
                           android:id="@+id/btnAskDoubt"
                           style="@style/Widget.Material3.Button.TonalButton"
                           android:layout_width="0dp"
-                          android:layout_height="wrap_content"
+                          android:layout_height="50dp"
                           android:layout_weight="1"
                           android:text="Ask Doubt (Voice)"
+                          android:textColor="#F8FAFC"
+                          app:backgroundTint="#1E293B" />
+                  </LinearLayout>
+
+                  <LinearLayout
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_marginTop="8dp"
+                      android:orientation="horizontal">
+
+                      <com.google.android.material.button.MaterialButton
+                          android:id="@+id/btnCorrectMe"
+                          style="@style/Widget.Material3.Button.TonalButton"
+                          android:layout_width="0dp"
+                          android:layout_height="wrap_content"
+                          android:layout_weight="1"
+                          android:text="Coach &amp; Correct"
+                          android:textColor="#F8FAFC"
+                          app:backgroundTint="#1E293B" />
+
+                      <Space
+                          android:layout_width="8dp"
+                          android:layout_height="wrap_content" />
+
+                      <com.google.android.material.button.MaterialButton
+                          android:id="@+id/btnGrammarExplain"
+                          style="@style/Widget.Material3.Button.TonalButton"
+                          android:layout_width="0dp"
+                          android:layout_height="wrap_content"
+                          android:layout_weight="1"
+                          android:text="Grammar Voice"
                           android:textColor="#F8FAFC"
                           app:backgroundTint="#1E293B" />
                   </LinearLayout>
@@ -504,7 +503,7 @@ jobs:
               val transliteration: String,
               val meaning: String,
               val grammarTip: String,
-              val expectedKeywords: List<String>
+              val doubtVoiceAnswer: String
           )
 
           data class LessonPart(
@@ -539,19 +538,19 @@ jobs:
           object PackManager {
 
               val supportedLanguages = listOf(
-                  LanguageOption("ar", "Arabic (العربية)", "ar-SA", "Al-Arabiyyah Bayna Yadayk & Madinah Book 1"),
-                  LanguageOption("ta", "Tamil (தமிழ்)", "ta-IN", "Thirukkural & Spoken Tamil Foundation"),
-                  LanguageOption("es", "Spanish (Español)", "es-ES", "Aula Internacional & Instituto Cervantes"),
-                  LanguageOption("fr", "French (Français)", "fr-FR", "Grammaire Progressive & Taxi!"),
-                  LanguageOption("de", "German (Deutsch)", "de-DE", "Menschen & Schritte International"),
-                  LanguageOption("ja", "Japanese (日本語)", "ja-JP", "Genki I & Minna no Nihongo"),
-                  LanguageOption("hi", "Hindi (हिन्दी)", "hi-IN", "Teach Yourself Hindi & Conversational Drills")
+                  LanguageOption("ar", "Arabic (العربية)", "ar-SA", "Arabic Tutor (Book 1 & 2)"),
+                  LanguageOption("ta", "Tamil (தமிழ்)", "ta-IN", "Spoken & Literary Tamil Foundation"),
+                  LanguageOption("es", "Spanish (Español)", "es-ES", "Aula Internacional"),
+                  LanguageOption("fr", "French (Français)", "fr-FR", "Grammaire Progressive"),
+                  LanguageOption("de", "German (Deutsch)", "de-DE", "Menschen Deutsch"),
+                  LanguageOption("ja", "Japanese (日本語)", "ja-JP", "Genki I"),
+                  LanguageOption("hi", "Hindi (हिन्दी)", "hi-IN", "Teach Yourself Hindi")
               )
 
               private fun packFile(context: Context, langCode: String): File {
                   val dir = File(context.filesDir, "lingual_packs")
                   if (!dir.exists()) dir.mkdirs()
-                  return File(dir, "pack_${langCode}_v2.json")
+                  return File(dir, "pack_${langCode}_v3.json")
               }
 
               fun hasOfflinePack(context: Context, langCode: String): Boolean {
@@ -630,7 +629,7 @@ jobs:
                                       put("transliteration", d.transliteration)
                                       put("meaning", d.meaning)
                                       put("grammarTip", d.grammarTip)
-                                      put("expectedKeywords", JSONArray(d.expectedKeywords))
+                                      put("doubtVoiceAnswer", d.doubtVoiceAnswer)
                                   })
                               }
                               put("drills", drillsArr)
@@ -655,9 +654,6 @@ jobs:
                       val drills = mutableListOf<DrillItem>()
                       for (j in 0 until drillsJson.length()) {
                           val dObj = drillsJson.getJSONObject(j)
-                          val kwArr = dObj.optJSONArray("expectedKeywords") ?: JSONArray()
-                          val kw = mutableListOf<String>()
-                          for (k in 0 until kwArr.length()) kw.add(kwArr.optString(k, ""))
                           drills.add(
                               DrillItem(
                                   tutorQuestion = dObj.optString("tutorQuestion", "Repeat the target phrase."),
@@ -665,16 +661,16 @@ jobs:
                                   transliteration = dObj.optString("transliteration", ""),
                                   meaning = dObj.optString("meaning", ""),
                                   grammarTip = dObj.optString("grammarTip", ""),
-                                  expectedKeywords = kw.filter { it.isNotBlank() }
+                                  doubtVoiceAnswer = dObj.optString("doubtVoiceAnswer", "")
                               )
                           )
                       }
                       parts.add(
                           LessonPart(
                               partNumber = pObj.optInt("partNumber", i + 1),
-                              title = pObj.optString("title", "Part ${i + 1}"),
+                              title = pObj.optString("title", "Lesson ${i + 1}"),
                               bookReference = pObj.optString("bookReference", book),
-                              tutorIntro = pObj.optString("tutorIntro", "Listen closely and answer aloud."),
+                              tutorIntro = pObj.optString("tutorIntro", "Listen closely and repeat."),
                               drills = drills
                           )
                       )
@@ -683,7 +679,6 @@ jobs:
                   return LanguagePack(code, name, locale, book, parts)
               }
 
-              // Master pedagogical sequence applied across ALL languages (Arabic serves as the complete blueprint)
               fun buildOrderedCurriculumPack(option: LanguageOption): LanguagePack {
                   val langName = option.label.substringBefore(" (")
                   return when (option.code) {
@@ -691,137 +686,121 @@ jobs:
                           languageCode = "ar",
                           languageName = "Arabic",
                           localeTag = option.localeTag,
-                          famousBookTitle = option.famousBookTitle,
+                          famousBookTitle = "Arabic Tutor",
                           parts = listOf(
                               LessonPart(
-                                  1, "Part 1: Greetings & Politeness", "Al-Arabiyyah Bayna Yadayk • Unit 1",
-                                  "Let's begin Part 1 face-to-face. I will ask you how to greet and thank someone in Arabic.",
+                                  1, "Lesson 1: Greetings & Ism / Harf", "Arabic Tutor • Lesson 1",
+                                  "From Arabic Tutor Lesson 1: start with clear greetings and nominal phrases.",
                                   listOf(
                                       DrillItem(
-                                          "How do you greet someone with peace in Arabic?",
+                                          "Listen and repeat the greeting in Arabic.",
                                           "السَّلَامُ عَلَيْكُمْ", "As-salamu alaykum", "Peace be upon you",
-                                          "Standard greeting; reply with 'Wa alaykum as-salam'.",
-                                          listOf("salam", "salaam", "peace", "alaykum", "السلام")
+                                          "Use 'As-salamu alaykum' to greet; respond with 'Wa alaykum as-salam'.",
+                                          "In Arabic Tutor Lesson 1, As-salamu alaykum means peace be upon you. Listen to the Arabic pronunciation and repeat it with full vowels."
                                       ),
                                       DrillItem(
-                                          "Ask a male friend how he is doing in Arabic.",
-                                          "مَرْحَبًا، كَيْفَ حَالُكَ؟", "Marhaban, kayfa haluka?", "Hello, how are you? (male)",
-                                          "'-uka' marks masculine 'you'; '-uki' marks feminine 'you'.",
-                                          listOf("kayfa", "haluka", "how are you", "marhaban", "كيف")
+                                          "Listen and ask how a male is doing.",
+                                          "كَيْفَ حَالُكَ؟", "Kayfa haluka?", "How are you? (to a male)",
+                                          "Ending '-uka' addresses a masculine singular person; '-uki' addresses feminine.",
+                                          "Kayfa haluka means how are you to a male. Notice the 'ka' ending at the end of haluka."
                                       ),
                                       DrillItem(
-                                          "How do you say 'Thank you very much' in Arabic?",
+                                          "Listen and express gratitude.",
                                           "شُكْرًا جَزِيلًا", "Shukran jazilan", "Thank you very much",
-                                          "'Shukran' = thanks; 'jazilan' = abundantly/very much.",
-                                          listOf("shukran", "jazilan", "thank", "thanks", "شكرا")
+                                          "'Shukran' means thanks; 'jazilan' adds strong emphasis.",
+                                          "Shukran jazilan means thank you very much. Pronounce the 'th' or 's' and clear long 'aa' in jazilan."
                                       )
                                   )
                               ),
                               LessonPart(
-                                  2, "Part 2: Demonstratives & Core Nouns", "Madinah Arabic Reader • Book 1",
-                                  "Now in Part 2, we practice pointing out objects and asking 'What is this?'",
+                                  2, "Lesson 2: Demonstratives (Hadha / Dhalika)", "Arabic Tutor • Lesson 2",
+                                  "From Arabic Tutor Lesson 2: pointing words and definite nouns with 'Al-'.",
                                   listOf(
                                       DrillItem(
-                                          "How do you ask 'What is this?' in Arabic?",
+                                          "Listen and ask 'What is this?'",
                                           "مَا هَذَا؟", "Ma hadha?", "What is this?",
-                                          "'Ma' asks 'what' for non-human things; 'hadha' = this (masculine).",
-                                          listOf("hadha", "hatha", "what is this", "this", "ماذا")
+                                          "'Ma' asks 'what' for things; 'hadha' points to near masculine singular.",
+                                          "Ma hadha means what is this. Hadha points to something near you."
                                       ),
                                       DrillItem(
-                                          "Say 'This is a book' in Arabic.",
+                                          "Listen and say 'This is a book'.",
                                           "هَذَا كِتَابٌ", "Hadha kitabun", "This is a book",
-                                          "Indefinite noun takes '-un' (tanween) when no 'al-' prefix is present.",
-                                          listOf("kitab", "book", "hadha", "this", "كتاب")
+                                          "Indefinite noun 'kitabun' has tanween '-un'; adding 'al-' makes 'al-kitabu'.",
+                                          "Hadha kitabun means this is a book. Kitab is the noun for book."
                                       )
                                   )
                               ),
                               LessonPart(
-                                  3, "Part 3: Verbs, Roots & Daily Actions", "Madinah Book 2 & Root System",
-                                  "In Part 3, we move into verbs and tri-literal roots so you can express intent and comprehension.",
+                                  3, "Lesson 3: Verbs & Root Patterns", "Arabic Tutor • Lesson 3",
+                                  "From Arabic Tutor Lesson 3: verb forms, intention, and comprehension.",
                                   listOf(
                                       DrillItem(
-                                          "How do you say 'I want to learn' in Arabic?",
+                                          "Listen and say 'I want to learn'.",
                                           "أُرِيدُ أَنْ أَتَعَلَّمَ", "Uridu an ata'allama", "I want to learn",
                                           "'Uridu' = I want; 'an' + subjunctive 'ata'allama' = to learn.",
-                                          listOf("uridu", "ata'allam", "learn", "want", "أريد")
+                                          "Uridu an ata'allama means I want to learn. Listen closely to the verb vowels."
                                       ),
                                       DrillItem(
-                                          "Say 'I understand a little' in Arabic.",
+                                          "Listen and say 'I understand a little'.",
                                           "أَفْهَمُ قَلِيلًا", "Afhamu qalilan", "I understand a little",
-                                          "Root ف-ه-م (f-h-m) relates to understanding; 'qalilan' = a little.",
-                                          listOf("afham", "understand", "qalil", "little", "أفهم")
+                                          "Root ف-ه-م (f-h-m) means to understand; 'qalilan' means a little.",
+                                          "Afhamu qalilan means I understand a little. It comes from the root fa-ha-mim."
                                       )
                                   )
                               ),
                               LessonPart(
-                                  4, "Part 4: Questions, Places & Dialogue", "Al-Arabiyyah Bayna Yadayk • Dialogue Drills",
-                                  "In Part 4, we combine location questions and real-world travel/daily dialogue.",
+                                  4, "Lesson 4: Questions & Everyday Speech", "Arabic Tutor • Lesson 4",
+                                  "From Arabic Tutor Lesson 4: location questions and practical phrases.",
                                   listOf(
                                       DrillItem(
-                                          "Ask 'Where is the station?' in Arabic.",
+                                          "Listen and ask 'Where is the station?'",
                                           "أَيْنَ المَحَطَّةُ؟", "Ayna al-mahattatu?", "Where is the station?",
-                                          "'Ayna' = where; 'al-' makes 'mahattah' (station) definite.",
-                                          listOf("ayna", "where", "mahatta", "station", "أين")
+                                          "'Ayna' = where; 'al-mahattatu' = the station.",
+                                          "Ayna al-mahattatu means where is the station. Ayna is the question word for where."
                                       )
                                   )
                               )
                           )
                       )
                       else -> {
-                          val sampleGreeting = when (option.code) {
+                          val samplePhrase = when (option.code) {
                               "ta" -> DrillItem(
-                                  "How do you greet someone respectfully in Tamil?",
+                                  "Listen and repeat the respectful Tamil greeting.",
                                   "வணக்கம், எப்படி இருக்கிறீர்கள்?", "Vanakkam, eppadi irukkirirgal?", "Hello, how are you? (respectful)",
-                                  "Respectful plural ending '-irgal' shows polite address in Tamil.",
-                                  listOf("vanakkam", "eppadi", "hello", "how are you", "வணக்கம்")
+                                  "Respectful plural ending '-irgal' marks polite address.",
+                                  "Vanakkam eppadi irukkirirgal is a polite greeting in Tamil."
                               )
                               "es" -> DrillItem(
-                                  "How do you ask 'How are you?' politely in Spanish?",
-                                  "¿Cómo estás? / ¿Cómo está?", "Como estas? / Como esta?", "How are you? (informal / formal)",
-                                  "'Estas' is informal singular; 'esta' is formal singular (usted).",
-                                  listOf("como estas", "como esta", "how are you", "hola", "como")
+                                  "Listen and repeat the Spanish greeting.",
+                                  "¿Cómo estás?", "Como estas?", "How are you?",
+                                  "Use 'Como estas' for informal and 'Como esta' for formal.",
+                                  "Como estas means how are you in Spanish."
                               )
                               "fr" -> DrillItem(
-                                  "How do you say 'Good morning / Hello' politely in French?",
-                                  "Bonjour, comment allez-vous ?", "Bon-zhoor, ko-mahn ta-lay-voo", "Hello / Good day, how are you?",
+                                  "Listen and repeat the French greeting.",
+                                  "Bonjour, comment allez-vous ?", "Bonjour, comment allez-vous", "Hello, how are you?",
                                   "'Bonjour' is standard daytime greeting; 'vous' is formal/plural.",
-                                  listOf("bonjour", "comment allez", "hello", "how are you")
+                                  "Bonjour comment allez-vous is a polite greeting in French."
                               )
                               "de" -> DrillItem(
-                                  "How do you say 'Hello, how are you?' in German?",
-                                  "Hallo, wie geht es dir?", "Hah-lo, vee gate ess deer", "Hello, how is it going for you?",
-                                  "'Wie geht es dir?' is standard informal phrasing in German.",
-                                  listOf("hallo", "wie geht", "how are you", "guten tag")
+                                  "Listen and repeat the German greeting.",
+                                  "Hallo, wie geht es dir?", "Hallo, wie geht es dir", "Hello, how are you?",
+                                  "'Wie geht es dir' is standard in German.",
+                                  "Hallo wie geht es dir means hello how are you in German."
                               )
                               "ja" -> DrillItem(
-                                  "How do you say 'Good morning' politely in Japanese?",
+                                  "Listen and repeat the Japanese morning greeting.",
                                   "おはようございます", "Ohayo gozaimasu", "Good morning (polite)",
-                                  "Adding 'gozaimasu' elevates 'ohayo' to polite speech.",
-                                  listOf("ohayo", "gozaimasu", "good morning", "hello")
+                                  "'Gozaimasu' adds polite register to 'ohayo'.",
+                                  "Ohayo gozaimasu is polite good morning in Japanese."
                               )
                               else -> DrillItem(
-                                  "How do you say 'Hello, how are you?' in Hindi?",
-                                  "नमस्ते, आप कैसे हैं?", "Namaste, aap kaise hain?", "Hello, how are you? (respectful)",
-                                  "'Aap' is respectful 'you'; 'kaise' agrees with masculine singular.",
-                                  listOf("namaste", "kaise", "how are you", "hello")
+                                  "Listen and repeat the Hindi greeting.",
+                                  "नमस्ते, आप कैसे हैं?", "Namaste, aap kaise hain?", "Hello, how are you?",
+                                  "'Aap' is respectful 'you'.",
+                                  "Namaste aap kaise hain is a respectful greeting in Hindi."
                               )
                           }
-
-                          val secondDrill = when (option.code) {
-                              "ta" -> DrillItem(
-                                  "Say 'I want to learn Tamil' in Tamil.",
-                                  "எனக்கு தமிழ் கற்றுக்கொள்ள வேண்டும்", "Enakku Tamil katrukkolla vendum", "I want to learn Tamil",
-                                  "Tamil follows Subject–Object–Verb order with dative 'Enakku'.",
-                                  listOf("enakku", "katrukkolla", "vendum", "learn", "tamil")
-                              )
-                              else -> DrillItem(
-                                  "Say 'I want to learn $langName' in $langName.",
-                                  "I want to learn $langName", "Core learning sentence ($langName)", "Expressing learning goal",
-                                  "Follow Part 1–4 progression: Greetings -> Nouns/Objects -> Verbs -> Dialogue.",
-                                  listOf("learn", langName.lowercase(), "want")
-                              )
-                          }
-
                           LanguagePack(
                               languageCode = option.code,
                               languageName = langName,
@@ -829,36 +808,43 @@ jobs:
                               famousBookTitle = option.famousBookTitle,
                               parts = listOf(
                                   LessonPart(
-                                      1, "Part 1: Greetings & Politeness", option.famousBookTitle,
-                                      "Following the master tutor order (Part 1 of 4): start with greetings and polite address.",
-                                      listOf(sampleGreeting)
+                                      1, "Lesson 1: Foundation & Greetings", option.famousBookTitle,
+                                      "Following the same 4-lesson order as Arabic Tutor: Lesson 1 greetings.",
+                                      listOf(samplePhrase)
                                   ),
                                   LessonPart(
-                                      2, "Part 2: Demonstratives & Core Nouns", option.famousBookTitle,
-                                      "Part 2 of 4: identify objects and ask direct questions.",
+                                      2, "Lesson 2: Demonstratives & Nouns", option.famousBookTitle,
+                                      "Lesson 2: core nouns and pointing out objects.",
                                       listOf(
                                           DrillItem(
-                                              "Ask 'What is this?' in $langName.",
-                                              "What is this? ($langName)", "Core object inquiry", "Asking 'what is this' in $langName",
-                                              "Core question structure for naming everyday objects.",
-                                              listOf("what", "this", langName.lowercase())
+                                              "Practice object naming in $langName.",
+                                              "What is this?", "Core object inquiry", "What is this?",
+                                              "Identify common nouns in $langName.",
+                                              "This drill focuses on asking what an object is in $langName."
                                           )
                                       )
                                   ),
                                   LessonPart(
-                                      3, "Part 3: Verbs, Roots & Daily Actions", option.famousBookTitle,
-                                      "Part 3 of 4: practice action verbs and expressing intentions.",
-                                      listOf(secondDrill)
-                                  ),
-                                  LessonPart(
-                                      4, "Part 4: Questions, Places & Dialogue", option.famousBookTitle,
-                                      "Part 4 of 4: combine location words into real conversations.",
+                                      3, "Lesson 3: Verbs & Actions", option.famousBookTitle,
+                                      "Lesson 3: expressing actions and learning intent.",
                                       listOf(
                                           DrillItem(
-                                              "Ask 'Where is the station?' in $langName.",
-                                              "Where is the station? ($langName)", "Navigation question", "Asking for location in $langName",
-                                              "Pair location question words with clear nouns.",
-                                              listOf("where", "station", langName.lowercase())
+                                              "Practice expressing 'I want to learn'.",
+                                              "I want to learn", "Learning intent", "I want to learn",
+                                              "Combine desire/intention with action verbs.",
+                                              "Here we practice saying I want to learn in $langName."
+                                          )
+                                      )
+                                  ),
+                                  LessonPart(
+                                      4, "Lesson 4: Questions & Places", option.famousBookTitle,
+                                      "Lesson 4: asking where places are.",
+                                      listOf(
+                                          DrillItem(
+                                              "Practice asking 'Where is the station?'",
+                                              "Where is the station?", "Location question", "Where is the station?",
+                                              "Use location question words clearly.",
+                                              "Here we practice asking where the station is in $langName."
                                           )
                                       )
                                   )
@@ -880,6 +866,7 @@ jobs:
           import android.speech.RecognizerIntent
           import android.speech.SpeechRecognizer
           import android.speech.tts.TextToSpeech
+          import android.speech.tts.Voice
           import android.view.View
           import android.widget.AdapterView
           import android.widget.ArrayAdapter
@@ -900,30 +887,30 @@ jobs:
               private lateinit var binding: ActivityMainBinding
               private var tts: TextToSpeech? = null
               private var ttsReady = false
+              private var hasNativeTargetVoice = false
 
               private var selectedLangIndex = 0
               private var currentPack: LanguagePack? = null
               private var currentPartIndex = 0
               private var currentDrillIndex = 0
               private var customRemoteUrl = ""
+              private var voiceModeIsDoubt = false
 
               private val micPermissionLauncher = registerForActivityResult(
                   ActivityResultContracts.RequestPermission()
               ) { granted ->
-                  if (granted) startVoiceInput()
-                  else speakTutorReply("Microphone permission is needed so I can hear you speak.")
+                  if (granted) launchVoiceSession()
+                  else speakCoachEnglish("Microphone permission is needed to listen when you speak.")
               }
 
-              private val speechInputLauncher = registerForActivityResult(
+              private val speechSessionLauncher = registerForActivityResult(
                   ActivityResultContracts.StartActivityForResult()
-              ) { result ->
-                  if (result.resultCode == RESULT_OK) {
-                      val matches = result.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
-                      val spoken = matches?.firstOrNull()?.trim().orEmpty()
-                      if (spoken.isNotEmpty()) {
-                          binding.etUserSpeechOrDoubt.setText(spoken)
-                          handleUserUtterance(spoken, isExplicitDoubt = false)
-                      }
+              ) { _ ->
+                  // Do NOT rely on raw text transcription for Arabic words; respond directly by voice
+                  if (voiceModeIsDoubt) {
+                      answerCurrentDoubtByVoice()
+                  } else {
+                      coachPronunciationByVoice()
                   }
               }
 
@@ -933,50 +920,88 @@ jobs:
                   setContentView(binding.root)
 
                   tts = TextToSpeech(this, this)
-                  loadLanguage(PackManager.supportedLanguages[selectedLangIndex], autoAsk = false)
+                  loadLanguage(PackManager.supportedLanguages[selectedLangIndex], speakTargetOnLoad = false)
 
                   binding.btnSettings.setOnClickListener { openSettingsDialog() }
 
                   binding.btnTutorAsk.setOnClickListener {
-                      askCurrentQuestionAloud()
+                      val drill = activeDrill() ?: return@setOnClickListener
+                      appendLog("Native Voice", drill.targetText)
+                      speakTargetLanguage(drill.targetText, 0.92f)
                   }
 
                   binding.btnRepeatSlow.setOnClickListener {
                       val drill = activeDrill() ?: return@setOnClickListener
-                      speakTargetLanguage(drill.targetText, 0.72f)
+                      appendLog("Slow Native Voice", drill.targetText)
+                      speakTargetLanguage(drill.targetText, 0.68f)
                   }
 
                   binding.btnNextDrill.setOnClickListener {
-                      advanceNextDrill(announce = true)
+                      advanceNextDrill(speakTarget = true)
                   }
 
                   binding.btnMicSpeak.setOnClickListener {
-                      if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
-                          == PackageManager.PERMISSION_GRANTED
-                      ) {
-                          startVoiceInput()
-                      } else {
-                          micPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
-                      }
-                  }
-
-                  binding.btnSubmitAnswer.setOnClickListener {
-                      val input = binding.etUserSpeechOrDoubt.text?.toString()?.trim().orEmpty()
-                      if (input.isEmpty()) {
-                          speakTutorReply("Please speak or type your answer first, or tap Ask Doubt if you have a question.")
-                          return@setOnClickListener
-                      }
-                      handleUserUtterance(input, isExplicitDoubt = false)
+                      voiceModeIsDoubt = false
+                      requestOrStartVoice()
                   }
 
                   binding.btnAskDoubt.setOnClickListener {
-                      val doubt = binding.etUserSpeechOrDoubt.text?.toString()?.trim().orEmpty()
-                      if (doubt.isEmpty()) {
-                          speakTutorReply("Ask me any doubt about pronunciation, grammar, or words, and I will explain it out loud.")
-                          return@setOnClickListener
-                      }
-                      handleUserUtterance(doubt, isExplicitDoubt = true)
+                      voiceModeIsDoubt = true
+                      requestOrStartVoice()
                   }
+
+                  binding.btnCorrectMe.setOnClickListener {
+                      coachPronunciationByVoice()
+                  }
+
+                  binding.btnGrammarExplain.setOnClickListener {
+                      answerCurrentDoubtByVoice()
+                  }
+              }
+
+              private fun requestOrStartVoice() {
+                  if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+                      == PackageManager.PERMISSION_GRANTED
+                  ) {
+                      launchVoiceSession()
+                  } else {
+                      micPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+                  }
+              }
+
+              private fun launchVoiceSession() {
+                  appendLog("You", if (voiceModeIsDoubt) "[Spoke a doubt]" else "[Spoke pronunciation]")
+                  if (!SpeechRecognizer.isRecognitionAvailable(this)) {
+                      if (voiceModeIsDoubt) answerCurrentDoubtByVoice() else coachPronunciationByVoice()
+                      return
+                  }
+                  val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+                      putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+                      putExtra(RecognizerIntent.EXTRA_PROMPT, if (voiceModeIsDoubt) "Ask your doubt..." else "Speak the phrase aloud...")
+                  }
+                  try {
+                      speechSessionLauncher.launch(intent)
+                  } catch (_: Exception) {
+                      if (voiceModeIsDoubt) answerCurrentDoubtByVoice() else coachPronunciationByVoice()
+                  }
+              }
+
+              private fun coachPronunciationByVoice() {
+                  val drill = activeDrill() ?: return
+                  val feedback = "Listen to the native pronunciation of ${drill.meaning}. ${drill.grammarTip} Repeat after me."
+                  appendLog("Tutor", "$feedback (${drill.transliteration})")
+                  speakCoachEnglish(feedback)
+                  tts?.playSilentUtterance(400L, TextToSpeech.QUEUE_ADD, "pause_1")
+                  speakTargetLanguage(drill.targetText, 0.75f)
+              }
+
+              private fun answerCurrentDoubtByVoice() {
+                  val drill = activeDrill() ?: return
+                  val answer = drill.doubtVoiceAnswer.ifBlank {
+                      "${drill.grammarTip} The phrase means ${drill.meaning}."
+                  }
+                  appendLog("Tutor (Doubt Voice)", answer)
+                  speakCoachEnglish(answer)
               }
 
               private fun openSettingsDialog() {
@@ -1004,7 +1029,7 @@ jobs:
                       )
                       spPart.setSelection(currentPartIndex.coerceIn(0, (pack.parts.size - 1).coerceAtLeast(0)))
                       val cached = PackManager.hasOfflinePack(this, pack.languageCode)
-                      tvPackInfo.text = "Book: ${pack.famousBookTitle}\nOffline cache: ${if (cached) "Saved locally" else "Ready to save"}"
+                      tvPackInfo.text = "Book: ${pack.famousBookTitle}\nOffline pack: ${if (cached) "Saved locally" else "Ready"}"
                   }
 
                   currentPack?.let { refreshPartsSpinner(it) }
@@ -1014,7 +1039,7 @@ jobs:
                           if (position != selectedLangIndex) {
                               selectedLangIndex = position
                               val opt = PackManager.supportedLanguages[position]
-                              loadLanguage(opt, autoAsk = true)
+                              loadLanguage(opt, speakTargetOnLoad = true)
                               currentPack?.let { refreshPartsSpinner(it) }
                           }
                       }
@@ -1036,7 +1061,7 @@ jobs:
                       val opt = PackManager.supportedLanguages[spLang.selectedItemPosition]
                       selectedLangIndex = spLang.selectedItemPosition
                       customRemoteUrl = etUrl.text?.toString()?.trim().orEmpty()
-                      tvPackInfo.text = "Downloading ${opt.label} full curriculum pack..."
+                      tvPackInfo.text = "Downloading ${opt.famousBookTitle} pack..."
                       lifecycleScope.launch {
                           val res = PackManager.downloadAndSavePack(this@MainActivity, opt, customRemoteUrl)
                           res.onSuccess { pack ->
@@ -1045,12 +1070,12 @@ jobs:
                               currentDrillIndex = 0
                               refreshPartsSpinner(pack)
                               renderCurrentDrill()
-                              speakTutorReply("Downloaded ${pack.languageName} pack from ${pack.famousBookTitle} for offline use.")
-                          }.onFailure { err ->
+                              speakCoachEnglish("${pack.famousBookTitle} downloaded for ${pack.languageName} and saved offline.")
+                          }.onFailure {
                               val local = PackManager.loadOfflinePack(this@MainActivity, opt)
                               currentPack = local
                               refreshPartsSpinner(local)
-                              speakTutorReply("Using offline pack for ${local.languageName}. ${err.message ?: ""}")
+                              speakCoachEnglish("Using saved offline pack for ${local.languageName}.")
                           }
                       }
                   }
@@ -1058,26 +1083,26 @@ jobs:
                   btnOffline.setOnClickListener {
                       val opt = PackManager.supportedLanguages[spLang.selectedItemPosition]
                       selectedLangIndex = spLang.selectedItemPosition
-                      loadLanguage(opt, autoAsk = false)
+                      loadLanguage(opt, speakTargetOnLoad = true)
                       currentPack?.let { refreshPartsSpinner(it) }
-                      speakTutorReply("Loaded offline pack for ${opt.label.substringBefore(" (")}.")
                   }
 
                   AlertDialog.Builder(this)
-                      .setTitle("Tutor Settings & Packs")
+                      .setTitle("Tutor Settings & Book Packs")
                       .setView(dialogView)
                       .setPositiveButton("Done", null)
                       .show()
               }
 
-              private fun loadLanguage(option: LanguageOption, autoAsk: Boolean) {
+              private fun loadLanguage(option: LanguageOption, speakTargetOnLoad: Boolean) {
                   val pack = PackManager.loadOfflinePack(this, option)
                   currentPack = pack
                   currentPartIndex = 0
                   currentDrillIndex = 0
                   renderCurrentDrill()
-                  if (autoAsk) {
-                      askCurrentQuestionAloud()
+                  selectNativeVoiceForLanguage(option.localeTag)
+                  if (speakTargetOnLoad) {
+                      activeDrill()?.let { speakTargetLanguage(it.targetText, 0.9f) }
                   }
               }
 
@@ -1091,20 +1116,13 @@ jobs:
                   val drill = activeDrill() ?: return
 
                   binding.tvActiveLangPart.text = "${pack.languageName} • ${part.title}"
-                  binding.tvTutorQuestion.text = "Tutor asks: ${drill.tutorQuestion}"
+                  binding.tvTutorQuestion.text = "Tutor: ${drill.tutorQuestion}"
                   binding.tvTargetPhrase.text = drill.targetText
                   binding.tvPronunciationMeaning.text = "${drill.transliteration} — ${drill.meaning}"
-                  binding.tvTutorNote.text = "Tip: ${drill.grammarTip}"
+                  binding.tvTutorNote.text = "${pack.famousBookTitle}: ${drill.grammarTip}"
               }
 
-              private fun askCurrentQuestionAloud() {
-                  val drill = activeDrill() ?: return
-                  val prompt = "${drill.tutorQuestion} In ${currentPack?.languageName ?: "the target language"}, we say ${drill.transliteration}."
-                  appendLog("Tutor", prompt)
-                  speakTutorReply(prompt)
-              }
-
-              private fun advanceNextDrill(announce: Boolean) {
+              private fun advanceNextDrill(speakTarget: Boolean) {
                   val pack = currentPack ?: return
                   val drills = activePart()?.drills.orEmpty()
                   if (currentDrillIndex + 1 < drills.size) {
@@ -1115,52 +1133,11 @@ jobs:
                   } else {
                       currentPartIndex = 0
                       currentDrillIndex = 0
-                      speakTutorReply("You completed all parts of ${pack.languageName}! Starting Part 1 review.")
                   }
                   renderCurrentDrill()
-                  if (announce) {
-                      askCurrentQuestionAloud()
-                  }
-              }
-
-              private fun handleUserUtterance(text: String, isExplicitDoubt: Boolean) {
-                  val drill = activeDrill() ?: return
-                  appendLog("You", text)
-
-                  val lower = text.lowercase()
-                  val looksLikeDoubt = isExplicitDoubt ||
-                      lower.startsWith("why ") || lower.startsWith("how ") ||
-                      lower.startsWith("what ") || lower.contains("doubt") ||
-                      lower.contains("explain") || lower.contains("mean") ||
-                      lower.contains("difference") || lower.contains("pronounce")
-
-                  if (looksLikeDoubt) {
-                      // Answer the learner's doubt by voice and stay on current drill (do NOT advance lesson)
-                      val explanation = when {
-                          lower.contains("pronounce") || lower.contains("speak") || lower.contains("sound") ->
-                              "For ${drill.meaning}, pronounce it as ${drill.transliteration}. ${drill.grammarTip}"
-                          lower.contains("mean") || lower.contains("meaning") ->
-                              "${drill.transliteration} means: ${drill.meaning}. ${drill.grammarTip}"
-                          else ->
-                              "Here is your answer: ${drill.grammarTip} The phrase ${drill.transliteration} means ${drill.meaning}."
-                      }
-                      appendLog("Tutor (Doubt Answer)", explanation)
-                      speakTutorReply(explanation)
-                      return
-                  }
-
-                  val isCorrect = drill.expectedKeywords.any { kw -> lower.contains(kw.lowercase()) } ||
-                      lower.contains(drill.transliteration.lowercase().take(5).trim())
-
-                  if (isCorrect) {
-                      val praise = "Well done! ${drill.transliteration} means ${drill.meaning}. Let's move to the next step."
-                      appendLog("Tutor", praise)
-                      speakTutorReply(praise)
-                      advanceNextDrill(announce = true)
-                  } else {
-                      val correction = "Not quite. Listen carefully: for '${drill.tutorQuestion}', the right phrase is ${drill.transliteration}, which means ${drill.meaning}. ${drill.grammarTip} Try saying ${drill.transliteration} again."
-                      appendLog("Tutor (Correction)", correction)
-                      speakTutorReply(correction)
+                  activeDrill()?.let { drill ->
+                      appendLog("Tutor", "${drill.tutorQuestion} (${drill.meaning})")
+                      if (speakTarget) speakTargetLanguage(drill.targetText, 0.9f)
                   }
               }
 
@@ -1172,36 +1149,69 @@ jobs:
                   }
               }
 
-              private fun startVoiceInput() {
-                  if (!SpeechRecognizer.isRecognitionAvailable(this)) {
-                      speakTutorReply("Speech recognition is not available on this device. You can type your answer or doubt.")
-                      return
-                  }
-                  val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
-                      putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-                      putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak your answer or ask your tutor...")
-                  }
-                  speechInputLauncher.launch(intent)
-              }
+              private fun selectNativeVoiceForLanguage(localeTag: String): Boolean {
+                  val engine = tts ?: return false
+                  if (!ttsReady) return false
 
-              private fun speakTutorReply(text: String) {
-                  if (!ttsReady || text.isBlank()) return
-                  tts?.language = Locale.US
-                  tts?.setSpeechRate(0.95f)
-                  tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "tutor_speech")
+                  val targetLocale = Locale.forLanguageTag(localeTag)
+                  val langCode = targetLocale.language.lowercase(Locale.ROOT)
+                  val voices = engine.voices.orEmpty()
+
+                  // Prefer an Arabic / target-language voice that is already installed locally (not network-only)
+                  val matchingVoice: Voice? = voices
+                      .filter { v -> v.locale.language.lowercase(Locale.ROOT) == langCode }
+                      .sortedWith(
+                          compareBy<Voice> { it.isNetworkConnectionRequired }
+                              .thenByDescending { it.locale.country.equals(targetLocale.country, ignoreCase = true) }
+                      )
+                      .firstOrNull()
+
+                  return if (matchingVoice != null) {
+                      engine.voice = matchingVoice
+                      engine.language = matchingVoice.locale
+                      hasNativeTargetVoice = true
+                      true
+                  } else {
+                      val res = engine.setLanguage(targetLocale)
+                      hasNativeTargetVoice = (res != TextToSpeech.LANG_MISSING_DATA && res != TextToSpeech.LANG_NOT_SUPPORTED)
+                      if (!hasNativeTargetVoice && langCode == "ar") {
+                          appendLog(
+                              "Tutor Note",
+                              "No Arabic TTS voice installed yet. Open Android Settings -> Accessibility / Text-to-speech output -> Google TTS settings -> Install voice data -> Arabic so Arabic sounds truly native."
+                          )
+                      }
+                      hasNativeTargetVoice
+                  }
               }
 
               private fun speakTargetLanguage(text: String, rate: Float) {
+                  val engine = tts ?: return
                   if (!ttsReady || text.isBlank()) return
-                  val localeTag = currentPack?.localeTag ?: "en-US"
-                  tts?.language = Locale.forLanguageTag(localeTag)
-                  tts?.setSpeechRate(rate)
-                  tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "target_speech")
+                  val localeTag = currentPack?.localeTag ?: "ar-SA"
+                  selectNativeVoiceForLanguage(localeTag)
+                  engine.setSpeechRate(rate)
+                  engine.speak(text, TextToSpeech.QUEUE_FLUSH, null, "target_native_speech")
+              }
+
+              private fun speakCoachEnglish(text: String) {
+                  val engine = tts ?: return
+                  if (!ttsReady || text.isBlank()) return
+                  val englishVoice = engine.voices?.firstOrNull {
+                      it.locale.language.equals("en", ignoreCase = true) && !it.isNetworkConnectionRequired
+                  }
+                  if (englishVoice != null) {
+                      engine.voice = englishVoice
+                  } else {
+                      engine.language = Locale.UK
+                  }
+                  engine.setSpeechRate(0.95f)
+                  engine.speak(text, TextToSpeech.QUEUE_FLUSH, null, "coach_speech")
               }
 
               override fun onInit(status: Int) {
                   if (status == TextToSpeech.SUCCESS) {
                       ttsReady = true
+                      currentPack?.let { selectNativeVoiceForLanguage(it.localeTag) }
                   }
               }
 
@@ -1241,7 +1251,7 @@ jobs:
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content"
                       android:layout_marginTop="10dp"
-                      android:text="Curriculum Part (Ordered)"
+                      android:text="Book Lesson (Ordered)"
                       android:textStyle="bold" />
 
                   <Spinner
